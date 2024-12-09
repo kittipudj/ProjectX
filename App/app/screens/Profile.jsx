@@ -4,7 +4,7 @@ import { Text, View, StyleSheet} from 'react-native'
 export default function ProfileScreen() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>This is ProfileScreen</Text>
+        <Text style={styles.text}>This is Kuy</Text>
       </View>
     )
 }

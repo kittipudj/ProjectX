@@ -13,14 +13,15 @@ export default function Tabs() {
        return(
     <Tab.Navigator 
     screenOptions={{
+        headerShown: true,
         tabBarShowLabel: true,
         tabBarLabelStyle:{
-            fontSize: 12,
+        fontSize: 12,
  
         },
         tabBarStyle: {
             backgroundColor: '#a1c6ea',
-            height: 60,
+            height: 60,       
         },
     }}>
         <Tab.Screen name="Home" component={HomeScreen} options={{tabBarIcon: (size, color) => (
@@ -31,7 +32,7 @@ export default function Tabs() {
         )}}/>
         <Tab.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: (size, color) => (
             <Ionicons name="person" size={24} color="black" />
-        )}}/>
+        ), headerShown: 'false'}}/>
     </Tab.Navigator>
         
 );

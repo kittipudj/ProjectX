@@ -4,7 +4,7 @@ import { Text, View, StyleSheet} from 'react-native'
 export default function HomeScreen() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>This is Homescreen!</Text>
+        <Text style={styles.text}>This is home</Text>
       </View>
     )
 }

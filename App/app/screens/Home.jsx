@@ -1,25 +1,24 @@
-import React from 'react'
-import { Text, View, StyleSheet} from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { Text, View, StyleSheet, ScrollView} from 'react-native'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import Header from '../components/Header'
 
-export default function HomeScreen() {
+export default function HomeScreen(props) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>This is home</Text>
-      </View>
+      <SafeAreaProvider style={styles.container}>
+          <SafeAreaView>
+            <ScrollView>
+              <Header topic = "Full body"/>
+            </ScrollView>
+          </SafeAreaView>
+      </SafeAreaProvider>
     )
 }
 
 const styles = StyleSheet.create({
   container:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,    
     backgroundColor: '#dae3e5',
   },
-  text: {
-    textAlign: 'center',
-    fontSize: 30,
-    
-  }
 })
 

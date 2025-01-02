@@ -1,11 +1,7 @@
-import React from "react";
-import Tabs from "./Tab";
+import { Redirect } from "expo-router";
 
-export default function Index() {
-  return (
-    <>
-      <Tabs/>
-    </>
-        
-  );
+const StartPage = () => {
+  return(<Redirect href="/Home"/>)
 }
+
+export default StartPage

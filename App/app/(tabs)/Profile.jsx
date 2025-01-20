@@ -1,25 +1,43 @@
 import React from 'react'
 import { Text, View, StyleSheet} from 'react-native'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ProfileScreen() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>This is ProfileScreen!</Text>
-      </View>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <Header/>
+        </SafeAreaView>
+      </SafeAreaProvider>
     )
 }
 
+const Header = () => {
+    return(
+        <SafeAreaView>
+            <Text style = {styles.header}>My profile</Text>
+        </SafeAreaView>
+    )
+}
+
+const Profile = () => {
+  return(
+    <SafeAreaView>
+      
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#dae3e5',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
-  text: {
-    textAlign: 'center',
+  header:{
     fontSize: 30,
-    
-  }
-})
+    fontWeight: 'bold',
+    textAlign:"center",
+  },
+  })

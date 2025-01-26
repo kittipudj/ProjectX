@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet} from 'react-native'
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ProfileScreen() {
@@ -11,7 +11,6 @@ export default function ProfileScreen() {
       </SafeAreaProvider>
     )
 }
-
 const Header = () => {
     return(
         <SafeAreaView>
@@ -23,7 +22,6 @@ const Header = () => {
 const Profile = () => {
   return(
     <SafeAreaView>
-      
     </SafeAreaView>
   )
 }
@@ -40,4 +38,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign:"center",
   },
-  })
+  
+})

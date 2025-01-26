@@ -77,7 +77,7 @@ const Youtube = () => {
             height={170}
             width={300}
             play={false}
-            videoId={'OYPiXBIgvJ8'}
+            videoId={'OwT_5ZnsXj0'}
             />
       </SafeAreaView>
       <SafeAreaView style = {styles.videoItem}>
@@ -85,7 +85,7 @@ const Youtube = () => {
             height={170}
             width={300}
             play={false}
-            videoId={'A3g8Gh7GZKY'}
+            videoId={'8cI9q3gptng'}
             />
       </SafeAreaView>
       <SafeAreaView style = {styles.videoItem}>
@@ -93,7 +93,7 @@ const Youtube = () => {
             height={170}
             width={300}
             play={false}
-            videoId={'XJRkTyvoL4k'}
+            videoId={'aQqSsELq7t0'}
             />
       </SafeAreaView>
     </ScrollView>

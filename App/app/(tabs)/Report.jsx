@@ -1,7 +1,7 @@
 import {React, useState} from 'react'
 import { Text, View, StyleSheet} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars'
 
 export default function ReportScreen() {
     return (

@@ -27,7 +27,7 @@ const Profile = () => {
       {/* Profile Picture */}
       <View >
         <Image style={styles.profilePicture}
-        source={require("C:/Users/ASUS/Documents/GitHub/ProjectX/App/assets/images/profile-icon-design-free-vector.jpg")}
+        source={require("../../assets/images/profile-icon-design-free-vector.jpg")}
         />
       </View>
 

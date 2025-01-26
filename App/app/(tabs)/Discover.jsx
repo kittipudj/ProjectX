@@ -43,25 +43,25 @@ const Custom  = (props) => {
         <TouchableOpacity >
           <Image
           style={styles.circle}
-          source={require("C:/Users/ASUS/Documents/GitHub/ProjectX/App/assets/images/splash.png")}
+          source={require("../../assets/images/splash.png")}
           />
         </TouchableOpacity>
         <TouchableOpacity >
           <Image
           style={styles.circle}
-          source={require("C:/Users/ASUS/Documents/GitHub/ProjectX/App/assets/images/muscle2.jpg")}
+          source={require("../../assets/images/muscle2.jpg")}
           />
         </TouchableOpacity>
         <TouchableOpacity >
           <Image
           style={styles.circle}
-          source={require("C:/Users/ASUS/Documents/GitHub/ProjectX/App/assets/images/muscle3.jpg")}
+          source={require("../../assets/images/muscle3.jpg")}
           />
         </TouchableOpacity>
         <TouchableOpacity >
           <Image
           style={styles.circle}
-          source={require("C:/Users/ASUS/Documents/GitHub/ProjectX/App/assets/images/muscle4.jpg")}
+          source={require("../../assets/images/muscle4.jpg")}
           />
         </TouchableOpacity>
       </SafeAreaView>

@@ -1,42 +1,44 @@
 import React from 'react'
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native'
+import { Text, View, StyleSheet} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ProfileScreen() {
-    return (
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <Header/>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    )
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <Profile />
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }
 const Header = () => {
-    return(
-        <SafeAreaView>
-            <Text style = {styles.header}>My profile</Text>
-        </SafeAreaView>
-    )
-}
+  return (
+    <SafeAreaView>
+      <Text style={styles.header}>My Profile</Text>
+    </SafeAreaView>
+  );
+};
 
 const Profile = () => {
   return(
     <SafeAreaView>
+      
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
     backgroundColor: '#dae3e5',
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
-  header:{
+  header: {
     fontSize: 30,
     fontWeight: 'bold',
-    textAlign:"center",
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  
-})
+  })

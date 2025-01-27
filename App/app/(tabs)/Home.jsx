@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, ScrollView, View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
@@ -38,9 +39,11 @@ const DayList = () => {
       {Array.from({ length: 30 }, (_, i) => (
         <View style={styles.dayItem} key={i}>
           <Text style={styles.dayText}>Day {i + 1}</Text>
+          <Link href="/DetailScreen">
           <TouchableOpacity style={styles.startButton}>
             <Text style={styles.startButtonText}>Start</Text>
           </TouchableOpacity>
+          </Link>
         </View>
       ))}
     </ScrollView>

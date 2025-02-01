@@ -7,6 +7,7 @@ export default function Questionnaire() {
 
   const completeQuiz = async () => {
     await AsyncStorage.setItem("hasCompletedQuiz", "true");
+    console.log("✅ Quiz completed! Redirecting to Home...");
     router.replace("/(tabs)/Home");
   };
 

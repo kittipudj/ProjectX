@@ -1,47 +1,58 @@
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, Stack, useRootNavigationState } from "expo-router";
+import { useRouter, Slot, usePathname } from "expo-router";
 
 export default function Layout() {
   console.log("🚀 Root _layout.jsx is being loaded");
 
   const router = useRouter();
-  const navigationState = useRootNavigationState();
-  const [initialized, setInitialized] = useState(false);
+  const pathname = usePathname(); // Get current route
+  const [loading, setLoading] = useState(true);
+  const [destination, setDestination] = useState(null);
 
   useEffect(() => {
-    if (!navigationState?.key) {
-      console.log("🔄 Navigation state is NOT ready yet...");
-      return;
-    }
-
-    console.log("🟢 Navigation state is ready!");
-
-    const initializeApp = async () => {
+    console.log("🧐 Checking AsyncStorage...");
+    
+    const checkFirstTimeUse = async () => {
       try {
         const hasCompletedQuiz = await AsyncStorage.getItem("hasCompletedQuiz");
         console.log("📂 Retrieved from AsyncStorage:", hasCompletedQuiz);
 
         if (!hasCompletedQuiz) {
-          console.log("➡️ Navigating to Questionnaire...");
-          router.replace("/questionnaire");
+          console.log("➡️ Setting destination to Questionnaire...");
+          setDestination("/questionnaire");
         } else {
-          console.log("🏠 Navigating to Home...");
-          router.replace("/(tabs)/Home");
+          console.log("🏠 Setting destination to Home...");
+          setDestination("/(tabs)/Home");
         }
       } catch (error) {
         console.error("❌ Error reading storage:", error);
       } finally {
-        setInitialized(true);
-        console.log("✅ App is fully initialized.");
+        console.log("✅ Finished checking, stopping loading...");
+        setLoading(false);
       }
     };
 
-    setTimeout(initializeApp, 500); // Add slight delay to avoid race conditions
-  }, [navigationState?.key]);
+    // 🚨 Prevent redirect issues when inside tabs
+    if (!pathname.startsWith("/(tabs)")) {
+      checkFirstTimeUse();
+    } else {
+      console.log("🛑 Already inside tabs, skipping AsyncStorage check...");
+      setLoading(false);
+    }
+  }, []);
 
-  if (!navigationState?.key || !initialized) {
+  useEffect(() => {
+    console.log(`🔎 Checking navigation... loading: ${loading}, destination: ${destination}`);
+    
+    if (!loading && destination && pathname === "/") {
+      console.log(`🚀 Navigating to ${destination} NOW!`);
+      router.replace(destination);
+    }
+  }, [loading, destination]);
+
+  if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Loading...</Text>
@@ -50,11 +61,6 @@ export default function Layout() {
     );
   }
 
-  return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="questionnaire" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)/_layout" options={{ headerShown: false }} />
-    </Stack>
-  );
+  console.log("✅ Rendering the main app (Slot)");
+  return <Slot />;
 }

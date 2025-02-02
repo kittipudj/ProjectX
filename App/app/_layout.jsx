@@ -1,66 +1,53 @@
 import { useEffect, useState } from "react";
-import { View, ActivityIndicator, Text } from "react-native";
+import { Slot, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, Slot, usePathname } from "expo-router";
 
 export default function Layout() {
-  console.log("🚀 Root _layout.jsx is being loaded");
-
   const router = useRouter();
-  const pathname = usePathname(); // Get current route
   const [loading, setLoading] = useState(true);
-  const [destination, setDestination] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    console.log("🧐 Checking AsyncStorage...");
-    
-    const checkFirstTimeUse = async () => {
-      try {
-        const hasCompletedQuiz = await AsyncStorage.getItem("hasCompletedQuiz");
-        console.log("📂 Retrieved from AsyncStorage:", hasCompletedQuiz);
-
-        if (!hasCompletedQuiz) {
-          console.log("➡️ Setting destination to Questionnaire...");
-          setDestination("/questionnaire");
-        } else {
-          console.log("🏠 Setting destination to Home...");
-          setDestination("/(tabs)/Home");
-        }
-      } catch (error) {
-        console.error("❌ Error reading storage:", error);
-      } finally {
-        console.log("✅ Finished checking, stopping loading...");
-        setLoading(false);
-      }
-    };
-
-    // 🚨 Prevent redirect issues when inside tabs
-    if (!pathname.startsWith("/(tabs)")) {
-      checkFirstTimeUse();
-    } else {
-      console.log("🛑 Already inside tabs, skipping AsyncStorage check...");
-      setLoading(false);
-    }
+    setIsMounted(true); // ✅ Ensure layout is fully mounted
   }, []);
 
   useEffect(() => {
-    console.log(`🔎 Checking navigation... loading: ${loading}, destination: ${destination}`);
-    
-    if (!loading && destination && pathname === "/") {
-      console.log(`🚀 Navigating to ${destination} NOW!`);
-      router.replace(destination);
-    }
-  }, [loading, destination]);
+    const checkLogin = async () => {
+      if (!isMounted) return; // 🚀 Prevents early navigation error
+
+      console.log("🔍 Checking AsyncStorage...");
+      try {
+        await AsyncStorage.removeItem("userLoggedIn"); // Clears login state for testing
+        const userExists = await AsyncStorage.getItem("userLoggedIn");
+
+        console.log("📂 Retrieved from AsyncStorage:", userExists);
+
+        if (!userExists) {
+          console.log("🔄 Redirecting to SignUpScreen...");
+          setTimeout(() => {
+            router.replace("/SignUpScreen"); // ✅ Delayed navigation
+          }, 500);
+        } else {
+          console.log("✅ User exists, going to Home...");
+        }
+      } catch (error) {
+        console.error("❌ Error checking login:", error);
+      }
+
+      setLoading(false);
+    };
+
+    checkLogin();
+  }, [isMounted]); // ✅ Only run when mounted
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
-        <ActivityIndicator size="large" />
-      </View>
+      <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <p>Loading...</p>
+      </div>
     );
   }
 
-  console.log("✅ Rendering the main app (Slot)");
+  console.log("✅ Rendering main UI");
   return <Slot />;
 }

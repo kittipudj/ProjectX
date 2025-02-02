@@ -1,22 +1,19 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "../app/screens/LoginScreen";
-import SignUpScreen from "../app/screens/SignUpScreen";
-import HomeScreen from "../app/screens/HomeScreen"; // Your main app screen
+import LoginScreen from "./screens/LoginScreen";  // ✅ Ensure correct path
+import SignUpScreen from "./screens/SignUpScreen";  // ✅ Ensure correct path
+import Tabs from "./(tabs)/layout";  // ✅ Ensure correct path
 
 const Stack = createStackNavigator();
 
-const AppNavigator = () => {
+export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">  // 👈 Start at Login
+      <Stack.Navigator initialRouteName="LoginScreen">
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
-
-export default AppNavigator;
+}

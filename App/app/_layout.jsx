@@ -5,47 +5,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Layout() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true); // ✅ Ensure layout is fully mounted
-  }, []);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkLogin = async () => {
-      if (!isMounted) return; // 🚀 Prevents early navigation error
+      const userExists = await AsyncStorage.getItem("userLoggedIn");
 
-      console.log("🔍 Checking AsyncStorage...");
-      try {
-        await AsyncStorage.removeItem("userLoggedIn"); // Clears login state for testing
-        const userExists = await AsyncStorage.getItem("userLoggedIn");
-
-        console.log("📂 Retrieved from AsyncStorage:", userExists);
-
-        if (!userExists) {
-          console.log("🔄 Redirecting to SignUpScreen...");
-          setTimeout(() => {
-            router.replace("/SignUpScreen"); // ✅ Delayed navigation
-          }, 500);
-        } else {
-          console.log("✅ User exists, going to Home...");
-        }
-      } catch (error) {
-        console.error("❌ Error checking login:", error);
+      if (userExists) {
+        console.log("✅ User exists, going to Home...");
+        setUserLoggedIn(true);
+      } else {
+        console.log("🔄 Redirecting to Login...");
+        router.replace("/LoginScreen"); // ✅ Send new users to login first
       }
-
       setLoading(false);
     };
 
     checkLogin();
-  }, [isMounted]); // ✅ Only run when mounted
+  }, []);
 
   if (loading) {
-    return (
-      <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <p>Loading...</p>
-      </div>
-    );
+    return <p>Loading...</p>; // ✅ Show loading while checking
   }
 
   console.log("✅ Rendering main UI");

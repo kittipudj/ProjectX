@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { registerUser } from "../src/services/authService";  // ✅ Ensure correct path
+import { useNavigation } from "@react-navigation/native";
 
 const SignUpScreen = ({ navigation }) => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [age, setAge] = useState("");

@@ -1,16 +1,13 @@
-import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
 
 export const registerUser = async (email, password, userData) => {
   try {
-    console.log("🚀 Registering user in Firebase:", email);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    console.log("✅ Firebase created user:", user.uid);
-
-    // ✅ Ensure Firestore is writing to the correct "users" collection
+    // Save user data to Firestore
     await setDoc(doc(db, "users", user.uid), {
       email: user.email,
       age: userData.age,
@@ -19,10 +16,10 @@ export const registerUser = async (email, password, userData) => {
       goal: userData.goal,
     });
 
-    console.log("✅ User data saved in Firestore");
+    console.log("✅ User registered successfully:", user);
     return user;
   } catch (error) {
     console.error("❌ Firebase Registration Error:", error);
-    return null;
+    throw error;
   }
 };

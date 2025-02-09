@@ -1,6 +1,7 @@
 import { Link } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, ScrollView, View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 
 
 export default function HomeScreen(props) {
@@ -11,7 +12,6 @@ export default function HomeScreen(props) {
              <ProgressBar dayLeft = "30"/>
              <DayList/>
         </SafeAreaView>
-        <SafeAreaView></SafeAreaView>
       </SafeAreaProvider>
       
     )
@@ -39,11 +39,10 @@ const DayList = () => {
       {Array.from({ length: 30 }, (_, i) => (
         <View style={styles.dayItem} key={i}>
           <Text style={styles.dayText}>Day {i + 1}</Text>
-          <Link href="../../screens/DetailScreen">
-          <TouchableOpacity style={styles.startButton}>
+          <TouchableOpacity style={styles.startButton} 
+                            onPress={() => router.push({ pathname: "/DetailScreen", params: { days: i + 1 } })}>
             <Text style={styles.startButtonText}>Start</Text>
           </TouchableOpacity>
-          </Link>
         </View>
       ))}
     </ScrollView>

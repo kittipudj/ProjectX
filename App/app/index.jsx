@@ -17,5 +17,6 @@ export default function Index() {
   }, []);
 
   if (loading) return null; 
-  return user ? <Redirect href="/(tabs)" /> : <Redirect href="/screens/LoginScreen" />;
+  return user ? <Redirect href="/(tabs)/Home" /> : <Redirect href="/screens/LoginScreen" />;
+
 }

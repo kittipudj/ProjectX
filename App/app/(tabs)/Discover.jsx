@@ -104,51 +104,46 @@ const Youtube = () => {
 
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 0.5,
-    backgroundColor: '#dae3e5',
+    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 1,
   },
-  container1:{
+  container1: {
     flex: 1,
-    backgroundColor: '#dae3e5',
+    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 1,
   },
-  header:{
+  header: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "#1f66f2",
   },
   videoItem: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#fff",
     padding: 15,
     marginVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderRadius: 12,
+    elevation: 5,
   },
   circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 75, 
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#ddd',
-    marginRight: 20,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    borderWidth: 3,
+    borderColor: "#1f66f2",
+    marginRight: 15,
   },
   Scroll: {
     flex: 1,
     paddingHorizontal: 20,
   },
-  Image :{
-    flexDirection :"row",
+  Image: {
+    flexDirection: "row",
     marginTop: 20,
-  
-  }
-  
-
-})
-
+  },
+});

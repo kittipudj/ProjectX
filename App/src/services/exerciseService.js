@@ -1,5 +1,7 @@
-const EXERCISEDB_API_URL = "https://exercisedb.p.rapidapi.com/exercises";
-const API_KEY = "9392000a97msh9c55d9fd3723128p10806cjsna296a99cea05"; // Replace with your actual API key
+import Constants from "expo-constants";
+
+const EXERCISEDB_API_URL = Constants.expoConfig.extra.EXERCISEDB_API_URL;
+const API_KEY = Constants.expoConfig.extra.EXERCISEDB_API_KEY;
 
 export async function fetchExercisesByCategory(category) {
   try {
@@ -10,8 +12,8 @@ export async function fetchExercisesByCategory(category) {
         "X-RapidAPI-Host": "exercisedb.p.rapidapi.com",
       },
     });
+
     if (!response.ok) throw new Error("Failed to fetch exercises");
-    
     return await response.json();
   } catch (error) {
     console.error("Error fetching exercises:", error);

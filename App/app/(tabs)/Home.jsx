@@ -51,55 +51,57 @@ const DayList = () => {
 
 
 const styles = StyleSheet.create({
-  container:{
-    flex: 1,    
-    backgroundColor: '#dae3e5',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  header:{
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  progressStyle: {
-    marginVertical: 40,
-    paddingHorizontal: 40,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    height: 70,
-    lineHeight: 30,
-    backgroundColor: '#fff',
-  },
-  dayListContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  dayItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  dayText: {
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  startButton: {
-    backgroundColor: '#1f66f2',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-  },
-  startButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-})
+    container: {
+      flex: 1,
+      backgroundColor: "#f8f9fa", 
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+    },
+    header: {
+      fontSize: 28,
+      fontWeight: "bold",
+      color: "#1f66f2",
+      textAlign: "center",
+      marginBottom: 10,
+    },
+    progressStyle: {
+      backgroundColor: "#fff",
+      borderRadius: 12,
+      padding: 15,
+      fontSize: 16,
+      textAlign: "center",
+      fontWeight: "bold",
+      color: "#1f66f2",
+      elevation: 5, 
+    },
+    dayListContainer: {
+      flex: 1,
+      paddingHorizontal: 10,
+    },
+    dayItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: "#fff",
+      padding: 15,
+      marginVertical: 5,
+      borderRadius: 12,
+      elevation: 3,
+    },
+    dayText: {
+      fontSize: 18,
+      fontWeight: "600",
+    },
+    startButton: {
+      backgroundColor: "#1f66f2",
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 20,
+    },
+    startButtonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  });
+  

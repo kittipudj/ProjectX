@@ -40,7 +40,7 @@ const DayList = () => {
         <View style={styles.dayItem} key={i}>
           <Text style={styles.dayText}>Day {i + 1}</Text>
           <TouchableOpacity style={styles.startButton} 
-                            onPress={() => router.push({ pathname: "/DetailScreen", params: { days: i + 1 } })}>
+                            onPress={() => router.push({ pathname: "../../screens/DetailScreen", params: { days: i + 1 } })}>
             <Text style={styles.startButtonText}>Start</Text>
           </TouchableOpacity>
         </View>

@@ -1,41 +1,31 @@
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
-import { Slot, useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../src/firebaseConfig";
+import { useRouter, Slot } from "expo-router";
 
 export default function Layout() {
     const router = useRouter();
-    const [isMounted, setIsMounted] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
+        console.log("🔍 Checking Firebase Auth state...");
 
-    useEffect(() => {
-        if (!isMounted) return; // 🚀 Prevents early navigation error
-
-        const checkLogin = async () => {
-            console.log("🔍 Checking AsyncStorage...");
-            const userExists = await AsyncStorage.getItem("userLoggedIn");
-
-            console.log("📂 Retrieved from AsyncStorage:", userExists);
-
-            if (!userExists) {
-                console.log("🚫 No user found, delaying navigation...");
-                setTimeout(() => {
-                    router.replace("/screens/LoginScreen"); // ✅ Delayed navigation
-                }, 500);
-            } else {
-                console.log("✅ User exists, proceeding to app...");
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            console.log("📂 Firebase User:", user);
+            if (user) {
+                console.log("✅ User is logged in");
                 setIsAuthenticated(true);
+            } else {
+                console.log("🚫 No user found, redirecting to Login...");
+                router.replace("/screens/LoginScreen");
             }
             setLoading(false);
-        };
+        });
 
-        checkLogin();
-    }, [isMounted]); // ✅ Only run when mounted
+        return () => unsubscribe();
+    }, []);
 
     if (loading) {
         return (
@@ -45,6 +35,5 @@ export default function Layout() {
         );
     }
 
-    console.log("✅ Rendering main UI");
-    return <Slot />;
+    return <Slot />; // ✅ Loads (tabs)/_layout.jsx automatically
 }

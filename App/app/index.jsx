@@ -16,6 +16,6 @@ export default function Index() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return null; // Wait until auth is checked
+  if (loading) return null; 
   return user ? <Redirect href="/Home" /> : <Redirect href="/LoginScreen" />;
 }

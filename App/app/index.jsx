@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Redirect } from "expo-router";
-import { auth } from "../src/firebaseConfig"; // Ensure the correct path
+import { auth } from "../src/firebaseConfig"; 
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function Index() {
@@ -17,5 +17,5 @@ export default function Index() {
   }, []);
 
   if (loading) return null; 
-  return user ? <Redirect href="/Home" /> : <Redirect href="/LoginScreen" />;
+  return user ? <Redirect href="/(tabs)" /> : <Redirect href="/screens/LoginScreen" />;
 }

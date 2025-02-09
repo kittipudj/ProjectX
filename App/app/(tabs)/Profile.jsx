@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from "reac
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { auth } from "../../src/firebaseConfig";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
   return (
@@ -23,16 +23,16 @@ const Header = () => (
 );
 
 const Profile = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigation.replace("LoginScreen"); // Redirect user after logout
+        await signOut(auth);
+        router.replace("/screens/LoginScreen"); // ✅ Correct path for expo-router
     } catch (error) {
-      console.error("Logout failed:", error);
+        console.error("Logout failed:", error);
     }
-  };
+};
 
   return (
     <View style={styles.profileContainer}>

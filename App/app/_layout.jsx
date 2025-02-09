@@ -14,13 +14,7 @@ export default function Layout() {
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             console.log("📂 Firebase User:", user);
-            if (user) {
-                console.log("✅ User is logged in");
-                setIsAuthenticated(true);
-            } else {
-                console.log("🚫 No user found, redirecting to Login...");
-                router.replace("/screens/LoginScreen");
-            }
+            setIsAuthenticated(!!user);
             setLoading(false);
         });
 
@@ -35,5 +29,5 @@ export default function Layout() {
         );
     }
 
-    return <Slot />; // ✅ Loads (tabs)/_layout.jsx automatically
+    return <Slot />; // ✅ Just renders (tabs)/_layout.jsx
 }

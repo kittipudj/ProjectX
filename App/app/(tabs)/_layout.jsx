@@ -1,7 +1,5 @@
 import { Tabs } from "expo-router";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Entypo, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 export default function Layout() {
     return (

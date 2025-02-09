@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList,TouchableOpacity} from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams,router } from 'expo-router';
 
 const DetailScreen = () => {
   return (
@@ -19,6 +19,9 @@ const DetailHeader = () => {
   return (
     <SafeAreaView style={styles.header}>
       <Text style={styles.headerText}>Day {days}</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: "\Home"})}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -69,9 +72,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#dae3e5',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: 'center',
     height: 60,
+    paddingHorizontal: 10,
+
   },
   headerText: {
     fontSize: 25,
@@ -124,6 +134,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Inter-Black'
   },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    textAlign :'center',
+    fontWeight: "bold",
+  },
+  button: { backgroundColor: "#dc143c",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    width: "20%",
+    alignItems: "center",
+    
+  }
 });
 
 export default DetailScreen;

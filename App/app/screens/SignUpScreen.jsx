@@ -8,12 +8,17 @@ const SignUpScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmpassword,setConfirmpassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignUp = async () => {
     setErrorMessage("");
 
     if (!email || !password) {
+      setErrorMessage("⚠️ Please enter both email and password.");
+      return;
+    }
+    if (password != confirmpassword){
       setErrorMessage("⚠️ Please enter both email and password.");
       return;
     }
@@ -48,6 +53,13 @@ const SignUpScreen = () => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Confirm password"
+        secureTextEntry
+        value={confirmpassword}
+        onChangeText={setConfirmpassword}
         style={styles.input}
       />
 

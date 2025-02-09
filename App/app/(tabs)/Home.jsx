@@ -40,7 +40,7 @@ const DayList = () => {
         <View style={styles.dayItem} key={i}>
           <Text style={styles.dayText}>Day {i + 1}</Text>
           <TouchableOpacity style={styles.startButton} 
-                            onPress={() => router.push({ pathname: "../../screens/DetailScreen", params: { days: i + 1 } })}>
+                            onPress={() => router.push({ pathname: "/DetailScreen", params: { days: i + 1 } })}>
             <Text style={styles.startButtonText}>Start</Text>
           </TouchableOpacity>
         </View>
@@ -65,13 +65,13 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     },
     progressStyle: {
-      backgroundColor: "#fff",
+      backgroundColor: "#202A44",
       borderRadius: 12,
       padding: 15,
       fontSize: 16,
       textAlign: "center",
       fontWeight: "bold",
-      color: "#1f66f2",
+      color: "white",
       elevation: 5, 
     },
     dayListContainer: {

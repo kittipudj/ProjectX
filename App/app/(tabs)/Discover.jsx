@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, ScrollView, StyleSheet, Image, TouchableOpacity} from 'react-native'
+import { Text, ScrollView, StyleSheet, Image, TouchableOpacity,View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import YoutubePlayer from 'react-native-youtube-iframe';
 
@@ -37,32 +37,32 @@ const Toppick  = (props) => {
   )
 }
 const Custom  = (props) => {
-  return(
+  return (
     <ScrollView horizontal={true}>
-      <SafeAreaView style = {styles.Image}>
-        <TouchableOpacity >
-          <Image
-          style={styles.circle}
-          source={require("../../assets/images/splash.png")}
-          />
+      <SafeAreaView style={styles.Image}>
+        <TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <Image style={styles.circle} source={require("../../assets/images/splash.png")} />
+            <Text style={styles.imageText}>SIXPACK</Text>
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity >
-          <Image
-          style={styles.circle}
-          source={require("../../assets/images/muscle2.jpg")}
-          />
+        <TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <Image style={styles.circle} source={require("../../assets/images/muscle2.jpg")} />
+            <Text style={styles.imageText}>ARM</Text>
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity >
-          <Image
-          style={styles.circle}
-          source={require("../../assets/images/muscle3.jpg")}
-          />
+        <TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <Image style={styles.circle} source={require("../../assets/images/muscle3.jpg")} />
+            <Text style={styles.imageText}> BACK</Text>
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity >
-          <Image
-          style={styles.circle}
-          source={require("../../assets/images/muscle4.jpg")}
-          />
+        <TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <Image style={styles.circle} source={require("../../assets/images/muscle4.jpg")} />
+            <Text style={styles.imageText}>  LEG</Text>
+          </View>
         </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>  
@@ -105,7 +105,6 @@ const Youtube = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.5,
     backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 1,
@@ -144,6 +143,24 @@ const styles = StyleSheet.create({
   },
   Image: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 30 ,
+    marginBottom :30,
+  },
+  imageText: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -30 }, { translateY: -10 }],
+    bottom: 1,
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+    paddingHorizontal: 2,
+    paddingVertical: 4,
+    borderRadius: 5,
+  },
+  imageContainer: {
+    alignItems: "center",
+    position: "relative",
   },
 });

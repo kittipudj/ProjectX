@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 10,
-    width: "20%",
+    width: "25%",
     alignItems: "center",
   },
   gifImage: {
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     height: 150,  // Set height
     marginTop: 10,
     borderRadius: 10,
+    marginLeft :"25%"
   },
 });
 

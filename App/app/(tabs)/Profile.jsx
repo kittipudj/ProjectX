@@ -1,8 +1,10 @@
-import React from "react";
-import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { auth } from "../../src/firebaseConfig";
+import { db } from "../../src/firebaseConfig";  // ✅ Import Firestore
+import { doc, getDoc } from "firebase/firestore";  // ✅ Firestore Functions
 import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
@@ -24,41 +26,90 @@ const Header = () => (
 
 const Profile = () => {
   const router = useRouter();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch User Data from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = auth.currentUser; // Get current logged-in user
+      if (!user) return;
+
+      try {
+        const userRef = doc(db, "users", user.uid); // Firestore document reference
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+          setUserData(docSnap.data());
+        } else {
+          console.log("⚠️ No user data found in Firestore");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleLogout = async () => {
     try {
-        await signOut(auth);
-        router.replace("/screens/LoginScreen"); // ✅ Correct path for expo-router
+      await signOut(auth);
+      router.replace("/screens/LoginScreen"); // ✅ Redirect to login
     } catch (error) {
-        console.error("Logout failed:", error);
+      console.error("Logout failed:", error);
     }
-};
+  };
 
   return (
     <View style={styles.profileContainer}>
-      {/* Profile Picture */}
-      <View>
-        <Image style={styles.profilePicture} source={require("../../assets/images/profile-icon-design-free-vector.jpg")} />
-      </View>
+      {/* Loading Indicator */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#1f66f2" />
+      ) : (
+        <>
+          {/* Profile Picture */}
+          <View>
+            <Image
+              style={styles.profilePicture}
+              source={require("../../assets/images/profile-icon-design-free-vector.jpg")}
+            />
+          </View>
 
-      {/* Input Fields */}
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Firstname / Lastname" placeholderTextColor="#888" />
-        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#888" />
-      </View>
+          {/* Input Fields with Firestore Data */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Firstname / Lastname"
+              placeholderTextColor="#888"
+              value={userData ? `${userData.firstName} ${userData.lastName}` : ""}
+              editable={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#888"
+              value={userData ? userData.email : ""}
+              editable={false}
+            />
+          </View>
 
-      {/* Menu Items */}
-      <View style={styles.menuContainer}>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>💪🏿 My Workout</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>⚙️ Options </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-          <Text style={styles.menuText}>🔓 Logout</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Menu Items */}
+          <View style={styles.menuContainer}>
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>💪🏿 My Workout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>⚙️ Options </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Text style={styles.menuText}>🔓 Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -80,6 +131,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
   },
   profilePicture: {
     width: 120,
@@ -117,3 +169,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
+

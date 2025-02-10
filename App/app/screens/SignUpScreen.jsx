@@ -1,32 +1,45 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../src/firebaseConfig";
+import { auth, db } from "../../src/firebaseConfig";  // ✅ Import Firestore
+import { doc, setDoc } from "firebase/firestore";  // ✅ Firestore Functions
 import { useRouter } from "expo-router";
 
 const SignUpScreen = () => {
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmpassword,setConfirmpassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignUp = async () => {
     setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("⚠️ Please enter both email and password.");
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      setErrorMessage("⚠️ All fields are required.");
       return;
     }
-    if (password != confirmpassword){
-      setErrorMessage("⚠️ Please enter both email and password.");
+    if (password !== confirmPassword) {
+      setErrorMessage("⚠️ Passwords do not match.");
       return;
     }
 
     try {
       console.log("🔄 Attempting sign-up...");
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("✅ User registered:", userCredential.user);
+      const user = userCredential.user;
+
+      console.log("✅ User registered:", user);
+
+      // ✅ Save user data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email,
+      });
+
       Alert.alert("Success", "Account created successfully!");
       router.replace("/Home");
     } catch (error) {
@@ -39,6 +52,24 @@ const SignUpScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Create Account</Text>
       <Text style={styles.subHeader}>Join us and start your journey</Text>
+
+      {/* Name and Surname in one row */}
+      <View style={styles.nameContainer}>
+        <TextInput
+          placeholder="First Name"
+          placeholderTextColor="#5A5A5A"
+          value={firstName}
+          onChangeText={setFirstName}
+          style={[styles.input, styles.halfInput]}
+        />
+        <TextInput
+          placeholder="Last Name"
+          placeholderTextColor="#5A5A5A"
+          value={lastName}
+          onChangeText={setLastName}
+          style={[styles.input, styles.halfInput]}
+        />
+      </View>
 
       <TextInput
         placeholder="Email"
@@ -56,10 +87,11 @@ const SignUpScreen = () => {
         style={styles.input}
       />
       <TextInput
-        placeholder="Confirm password"
+        placeholder="Confirm Password"
+        placeholderTextColor="#5A5A5A"
         secureTextEntry
-        value={confirmpassword}
-        onChangeText={setConfirmpassword}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
         style={styles.input}
       />
 
@@ -77,15 +109,72 @@ const SignUpScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F5F5", alignItems: "center", justifyContent: "center", padding: 20 },
-  header: { fontSize: 28, fontWeight: "bold", color: "#1F2937", marginBottom: 5 },
-  subHeader: { fontSize: 16, color: "#5A5A5A", marginBottom: 20 },
-  input: { width: "100%", padding: 15, borderRadius: 10, borderWidth: 1, borderColor: "#B0C4DE", backgroundColor: "#FFFFFF", color: "#1F2937", marginBottom: 15, shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 5, elevation: 2 },
-  errorText: { color: "#ff5252", fontSize: 14, marginBottom: 10 },
-  button: { backgroundColor: "#3b7dd8", paddingVertical: 12, paddingHorizontal: 25, borderRadius: 10, width: "100%", alignItems: "center", marginBottom: 10 },
-  buttonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "bold" },
-  secondaryButton: { paddingVertical: 10 },
-  secondaryButtonText: { color: "#3b7dd8", fontSize: 14 }
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1F2937",
+    marginBottom: 5,
+  },
+  subHeader: {
+    fontSize: 16,
+    color: "#5A5A5A",
+    marginBottom: 20,
+  },
+  nameContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  halfInput: {
+    width: "48%",
+  },
+  input: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#B0C4DE",
+    backgroundColor: "#FFFFFF",
+    color: "#1F2937",
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  errorText: {
+    color: "#ff5252",
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#3b7dd8",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  secondaryButton: {
+    paddingVertical: 10,
+  },
+  secondaryButtonText: {
+    color: "#3b7dd8",
+    fontSize: 14,
+  },
 });
 
 export default SignUpScreen;

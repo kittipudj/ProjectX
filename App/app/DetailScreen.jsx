@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, Text, View, FlatList,TouchableOpacity} from 'react-native';
-import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams,router } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 
 const DetailScreen = () => {
   return (
@@ -14,12 +14,12 @@ const DetailScreen = () => {
 };
 
 const DetailHeader = () => {
-  const { days } = useLocalSearchParams(); // Replace with useRoute if not using expo-router
+  const { days } = useLocalSearchParams(); 
 
   return (
     <SafeAreaView style={styles.header}>
       <Text style={styles.headerText}>Day {days}</Text>
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: "\Home"})}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: "/Home"})}>
         <Text style={styles.buttonText}>Back</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -27,7 +27,7 @@ const DetailHeader = () => {
 };
 
 const WorkOutDetail = () => {
-  const [workOut, setWorkOut] = useState(0); // Example default values
+  const [workOut, setWorkOut] = useState(0);
   const [Kcal, setKcal] = useState(0);
   const [Time, setTime] = useState(0);
 
@@ -52,26 +52,83 @@ const WorkOutDetail = () => {
 };
 
 const WorkOutList = () => {
-  const exercises = Array.from({ length: 30 }, (_, i) => `Exercise ${i + 1}`);
+  const [exercises, setExercises] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      const url = 'https://exercisedb.p.rapidapi.com/exercises/bodyPart/back?limit=10&offset=0';
+      const options = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': 'a50a5140d3mshcdf47ec04234248p14658djsna82df48ad2ed',
+          'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
+        },
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        setExercises(result);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExercises();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#1f66f2" />;
+  }
+
+  // Calculate calories burned and time for each exercise
+  const calculateCaloriesAndTime = (exercise) => {
+    const baseCaloriesPerMinute = 8; // Example calories burned per minute (can be adjusted)
+    const exerciseTime = 5; // Assume 5 minutes for each exercise (this can vary based on set)
+    
+    // Estimate calories burned based on time
+    const caloriesBurned = baseCaloriesPerMinute * exerciseTime;
+
+    // Assume 3 sets of the exercise (this can vary)
+    const sets = 3;
+
+    return {
+      sets,
+      caloriesBurned,
+      time: exerciseTime,
+    };
+  };
 
   return (
     <FlatList
       data={exercises}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={styles.listContainer}
-      renderItem={({ item }) => (
-        <View style={styles.exerciseItem}>
-          <Text style={styles.exerciseText}>{item}</Text>
-        </View>
-      )}
+      renderItem={({ item }) => {
+        const { sets, caloriesBurned, time } = calculateCaloriesAndTime(item);
+
+        return (
+          <View style={styles.exerciseItem}>
+            <Text style={styles.exerciseText}>{item.name}</Text>
+            <Image source={{ uri: item.gifUrl }} style={styles.gifImage} />
+            <Text style={styles.exerciseText}>Sets: {sets}</Text>
+            <Text style={styles.exerciseText}>Calories Burned: {caloriesBurned} kcal</Text>
+            <Text style={styles.exerciseText}>Time: {time} min</Text>
+          </View>
+        );
+      }}
     />
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#dae3e5',
+    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
@@ -81,16 +138,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 60,
     paddingHorizontal: 10,
-
   },
   headerText: {
-    fontSize: 25,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1f66f2",
     marginLeft: 10,
-    marginTop: 10,
-    fontFamily: 'Inter-Black',
   },
   statContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "#202A44",
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -104,18 +160,19 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 16,
-    color: '#000',
-    fontFamily: 'Inter-Black'
+    color: 'white',
+    fontWeight: 'bold'
   },
   divider: {
     width: 2,
     height: 70,
-    backgroundColor: 'red',
+    backgroundColor: 'white',
   },
   value: {
-    fontSize: 24,
-    color: '#000',
+    fontSize: 16,
+    color: 'white',
     textAlign: 'center',
+    fontWeight: 'bold'
   },
   listContainer: {
     paddingHorizontal: 20,
@@ -132,7 +189,6 @@ const styles = StyleSheet.create({
   exerciseText: {
     fontSize: 18,
     fontWeight: '500',
-    fontFamily: 'Inter-Black'
   },
   buttonText: {
     color: "#FFFFFF",
@@ -140,14 +196,20 @@ const styles = StyleSheet.create({
     textAlign :'center',
     fontWeight: "bold",
   },
-  button: { backgroundColor: "#dc143c",
+  button: { 
+    backgroundColor: "#dc143c",
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 10,
     width: "20%",
     alignItems: "center",
-    
-  }
+  },
+  gifImage: {
+    width: 150,   // Set width
+    height: 150,  // Set height
+    marginTop: 10,
+    borderRadius: 10,
+  },
 });
 
 export default DetailScreen;

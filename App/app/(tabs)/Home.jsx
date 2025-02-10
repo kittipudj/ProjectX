@@ -1,4 +1,3 @@
-import { Link } from 'expo-router'
 import { StyleSheet, Text, TouchableOpacity, ScrollView, View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'

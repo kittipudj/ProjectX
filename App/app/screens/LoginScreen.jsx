@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../src/firebaseConfig";
+import { auth, db } from "../../src/firebaseConfig"; // ✅ Import Firestore
+import { doc, getDoc } from "firebase/firestore"; // ✅ Firestore Functions
 import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
@@ -21,13 +22,37 @@ export default function LoginScreen() {
     try {
       console.log("🔄 Attempting login...");
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("✅ User logged in:", userCredential.user);
+      const user = userCredential.user;
+      console.log("✅ User logged in:", user);
+
+      // ✅ Fetch user data from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+
+      if (!userDoc.exists()) {
+        console.warn("⚠️ No profile data found in Firestore.");
+        Alert.alert("Notice", "Your profile data is missing. Please update your profile.");
+      } else {
+        console.log("📄 User profile data:", userDoc.data());
+      }
+
+      // ✅ Redirect to Home
       router.replace("/Home");
     } catch (error) {
       console.error("❌ Login error:", error.code, error.message);
-      setErrorMessage(error.code === "auth/user-not-found" || error.code === "auth/wrong-password"
-        ? "⚠️ Incorrect email or password."
-        : `⚠️ ${error.message}`);
+
+      // ✅ Improved Error Messages
+      let errorMsg = "⚠️ An error occurred. Please try again.";
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        errorMsg = "⚠️ Incorrect email or password.";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMsg = "⚠️ Too many failed attempts. Try again later.";
+      } else if (error.code === "auth/network-request-failed") {
+        errorMsg = "⚠️ Network error. Check your connection.";
+      } else if (error.code === "auth/invalid-email") {
+        errorMsg = "⚠️ Please enter a valid email.";
+      }
+
+      setErrorMessage(errorMsg);
     }
   };
 

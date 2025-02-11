@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../src/firebaseConfig"; // ✅ Import Firestore
 import { doc, getDoc } from "firebase/firestore"; // ✅ Firestore Functions
@@ -58,7 +58,8 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome Back</Text>
+      
+      <Image style={styles.profilePicture} source={require("../../assets/images/logo.png")} />
       <Text style={styles.subHeader}>Login to continue</Text>
 
       <TextInput
@@ -99,5 +100,13 @@ const styles = StyleSheet.create({
   button: { backgroundColor: "#3b7dd8", paddingVertical: 12, paddingHorizontal: 25, borderRadius: 10, width: "100%", alignItems: "center", marginBottom: 10 },
   buttonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "bold" },
   secondaryButton: { paddingVertical: 10 },
-  secondaryButtonText: { color: "#3b7dd8", fontSize: 14 }
+  secondaryButtonText: { color: "#3b7dd8", fontSize: 14 },
+  profilePicture: {
+    width: 200,
+    height: 200,
+    borderRadius: 80,
+    borderWidth: 0,
+    borderColor: "#1f66f2",
+    marginBottom: 5,
+  },
 });

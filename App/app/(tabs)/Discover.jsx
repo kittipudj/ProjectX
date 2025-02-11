@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react'
 import { Text, ScrollView, StyleSheet, Image, TouchableOpacity,View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
@@ -40,7 +41,7 @@ const Custom  = (props) => {
   return (
     <ScrollView horizontal={true}>
       <SafeAreaView style={styles.Image}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/CustomScreen"})}>
           <View style={styles.imageContainer}>
             <Image style={styles.circle} source={require("../../assets/images/splash.png")} />
             <Text style={styles.imageText}>SIXPACK</Text>

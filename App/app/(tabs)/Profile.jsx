@@ -6,6 +6,7 @@ import { auth, db } from "../../src/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
   const [theme, setTheme] = useState("light");
@@ -23,6 +24,8 @@ const Profile = ({ theme, setTheme }) => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Fetch User Data from Firestore
   useEffect(() => {
@@ -62,6 +65,19 @@ const Profile = ({ theme, setTheme }) => {
     router.push("/screens/SettingsScreen");
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.profileContainer}>
       {loading ? (
@@ -75,10 +91,22 @@ const Profile = ({ theme, setTheme }) => {
 
           {/* Rounded Profile Section */}
           <View style={styles.profileCard}>
-            <Image
-              style={styles.profilePicture}
-              source={require("../../assets/images/profile-icon-design-free-vector.jpg")}
-            />
+            <TouchableOpacity
+              onPress={pickImage}
+              style={styles.profilePictureContainer}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <Image
+                style={styles.profilePicture}
+                source={profileImage ? { uri: profileImage } : require("../../assets/images/profile-icon-design-free-vector.jpg")}
+              />
+              {isHovered && (
+                <View style={styles.profilePictureOverlay}>
+                  <MaterialCommunityIcons name="pencil" size={24} color="rgba(255, 255, 255, 0.7)" />
+                </View>
+              )}
+            </TouchableOpacity>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
               <Text style={styles.profileEmail}>{userData?.email}</Text>
@@ -150,14 +178,28 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginBottom: 15,
   },
-  profilePicture: {
+  profilePictureContainer: {
+    position: "relative",
     width: 90,
     height: 90,
+  },
+  profilePicture: {
+    width: "100%",
+    height: "100%",
     borderRadius: 45,
     borderWidth: 3,
     borderColor: "#1f66f2",
+  },
+  profilePictureOverlay: {
     position: "absolute",
-    top: -45,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    borderRadius: 45,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileInfo: {
     marginTop: 50,

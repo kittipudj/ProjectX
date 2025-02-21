@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, ActivityIndicator } fr
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../src/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore"; // ✅ Import updateDoc
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
@@ -39,6 +39,7 @@ const Profile = ({ theme, setTheme }) => {
 
         if (docSnap.exists()) {
           setUserData(docSnap.data());
+          setProfileImage(docSnap.data().profileImage || null); // Set profile image from Firestore
         } else {
           console.log("⚠️ No user data found in Firestore");
         }
@@ -74,7 +75,20 @@ const Profile = ({ theme, setTheme }) => {
     });
 
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const imageUri = result.assets[0].uri;
+      setProfileImage(imageUri);
+
+      // Update profile image in Firestore
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { profileImage: imageUri });
+        console.log("✅ Profile image updated in Firestore");
+      } catch (error) {
+        console.error("❌ Error updating profile image:", error);
+      }
     }
   };
 
@@ -183,13 +197,13 @@ const styles = StyleSheet.create({
   },
   profilePictureContainer: {
     position: "relative",
-    width: 90,
-    height: 90,
+    width: 110,
+    height: 110,
   },
   profilePicture: {
     width: "100%",
     height: "100%",
-    borderRadius: 45,
+    borderRadius: 55,
     borderWidth: 3,
     borderColor: "#1f66f2",
   },
@@ -199,7 +213,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%",
     height: "100%",
-    borderRadius: 45,
+    borderRadius: 55,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",

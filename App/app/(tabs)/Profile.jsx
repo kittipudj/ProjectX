@@ -8,16 +8,18 @@ import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
+  const [theme, setTheme] = useState("light");
+
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Profile />
+      <SafeAreaView style={theme === "light" ? styles.containerLight : styles.containerDark}>
+        <Profile theme={theme} setTheme={setTheme} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-const Profile = () => {
+const Profile = ({ theme, setTheme }) => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,6 +58,10 @@ const Profile = () => {
     }
   };
 
+  const handleSettingsPress = () => {
+    router.push("/screens/SettingsScreen");
+  };
+
   return (
     <View style={styles.profileContainer}>
       {loading ? (
@@ -86,7 +92,7 @@ const Profile = () => {
           </TouchableOpacity>
 
           {/* Settings */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
             <Ionicons name="settings-outline" size={24} color="#1f66f2" />
             <Text style={styles.menuText}>Settings</Text>
           </TouchableOpacity>
@@ -103,11 +109,17 @@ const Profile = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerLight: {
     flex: 1,
     backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
-    paddingTop: 40, // ✅ Adjusted to move content higher
+    paddingTop: 40,
+  },
+  containerDark: {
+    flex: 1,
+    backgroundColor: "#333",
+    paddingHorizontal: 16,
+    paddingTop: 40,
   },
   profileContainer: {
     flex: 1,
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    marginBottom: 15, // ✅ Reduced spacing to move up
+    marginBottom: 15,
   },
   profilePicture: {
     width: 90,
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 12,
     borderRadius: 10,
-    marginBottom: 10, // ✅ Reduced spacing
+    marginBottom: 10,
     width: "100%",
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -194,7 +206,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     elevation: 3,
-    marginTop: 10, // ✅ Reduced spacing
+    marginTop: 10,
   },
   logoutText: {
     color: "#FFFFFF",
@@ -203,4 +215,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-

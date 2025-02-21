@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./screens/LoginScreen";  
 import SignUpScreen from "./screens/SignUpScreen";  
 import Tabs from "./(tabs)/_layout";  // ✅ Correct import
-import Custom from './CustomScreen'
+import Custom from './screens/Custom/CustomScreenPage1'
 
 const Stack = createStackNavigator();
 

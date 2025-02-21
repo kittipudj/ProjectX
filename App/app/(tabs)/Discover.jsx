@@ -41,28 +41,24 @@ const Custom  = (props) => {
   return (
     <ScrollView horizontal={true}>
       <SafeAreaView style={styles.Image}>
-        <TouchableOpacity onPress={() => router.push({ pathname: "/CustomScreen"})}>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Custom/CustomScreenPage1"})}>
           <View style={styles.imageContainer}>
-            <Image style={styles.circle} source={require("../../assets/images/splash.png")} />
-            <Text style={styles.imageText}>SIXPACK</Text>
+            <Image style={styles.circle} source={require("../../assets/images/cleanfood.jpg")} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Custom//CustomScreenPage2"})}>
           <View style={styles.imageContainer}>
-            <Image style={styles.circle} source={require("../../assets/images/muscle2.jpg")} />
-            <Text style={styles.imageText}>ARM</Text>
+            <Image style={styles.circle} source={require("../../assets/images/warm.jpg")} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={styles.imageContainer}>
-            <Image style={styles.circle} source={require("../../assets/images/muscle3.jpg")} />
-            <Text style={styles.imageText}> BACK</Text>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Custom//CustomScreenPage3"})}>
+          <View style={styles.imageContainer}> 
+            <Image style={styles.circle} source={require("../../assets/images/waterdrink.jpg")} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push({ pathname: "/screens/Custom//CustomScreenPage4"})}>
           <View style={styles.imageContainer}>
-            <Image style={styles.circle} source={require("../../assets/images/muscle4.jpg")} />
-            <Text style={styles.imageText}>  LEG</Text>
+            <Image style={styles.circle} source={require("../../assets/images/sleep.jpg")} />
           </View>
         </TouchableOpacity>
       </SafeAreaView>

@@ -62,10 +62,6 @@ const Profile = () => {
         <ActivityIndicator size="large" color="#1f66f2" />
       ) : (
         <>
-          {/* Profile Title - Top Left */}
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>Profile</Text>
-          </View>
 
           {/* Rounded Profile Section */}
           <View style={styles.profileCard}>

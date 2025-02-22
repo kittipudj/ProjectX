@@ -1,14 +1,60 @@
-import { React, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { React, useState, useEffect } from "react";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
+import { auth, db } from '../../src/firebaseConfig'; // Import Firebase
+import { doc, getDoc } from 'firebase/firestore'; // Firestore functions
 
 export default function ReportScreen() {
+  const [workOut, setWorkOut] = useState(0);
+  const [Kcal, setKcal] = useState(0);
+  const [Time, setTime] = useState(0);
+  const [markedDates, setMarkedDates] = useState({});
+  const [loading, setLoading] = useState(true); // Add loading state
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    const loadWorkoutData = async () => {
+      if (!user) return; // Ensure user is defined
+
+      let totalWorkOut = 0;
+      let totalKcal = 0;
+      let totalTime = 0;
+      const dates = {};
+
+      for (let i = 1; i <= 30; i++) {
+        const docRef = doc(db, "users", user.uid, "progress", `day${i}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data() && docSnap.data().finished) {
+          totalWorkOut++;
+          totalKcal += 100; // Example value, replace with actual data
+          totalTime += 30; // Example value, replace with actual data
+          const date = new Date();
+          date.setDate(date.getDate() - (30 - i));
+          const dateString = date.toISOString().split('T')[0];
+          dates[dateString] = { marked: true, dotColor: '#1f66f2' };
+        }
+      }
+
+      setWorkOut(totalWorkOut);
+      setKcal(totalKcal);
+      setTime(totalTime);
+      setMarkedDates(dates);
+      setLoading(false); // Set loading to false after data is fetched
+    };
+
+    loadWorkoutData();
+  }, [user]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#1f66f2" style={styles.loadingIndicator} />; // Show loading indicator
+  }
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Header />
-        <Stats />
+        <Stats workOut={workOut} Kcal={Kcal} Time={Time} />
         <Calendar
           style={styles.calendar}
           theme={{
@@ -22,6 +68,7 @@ export default function ReportScreen() {
             arrowColor: "#1f66f2",
             monthTextColor: "#1f66f2",
           }}
+          markedDates={markedDates}
           onDayPress={(day) => {
             console.log("Selected day", day);
           }}
@@ -39,11 +86,7 @@ const Header = () => {
   );
 };
 
-const Stats = () => {
-  const [workOut, setWorkOut] = useState(0);
-  const [Kcal, setKcal] = useState(0);
-  const [Time, setTime] = useState(0);
-
+const Stats = ({ workOut, Kcal, Time }) => {
   return (
     <SafeAreaView style={styles.statContainer}>
       <View style={styles.statBox}>
@@ -115,6 +158,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     elevation: 5,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

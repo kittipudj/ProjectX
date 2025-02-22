@@ -65,6 +65,10 @@ const Profile = ({ theme, setTheme }) => {
     router.push("/screens/SettingsScreen");
   };
 
+  const handleMyWorkoutsPress = () => {
+    router.push("/Discover");
+  };
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -117,7 +121,7 @@ const Profile = ({ theme, setTheme }) => {
           </View>
 
           {/* My Workouts */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleMyWorkoutsPress}>
             <MaterialCommunityIcons name="dumbbell" size={24} color="#1f66f2" />
             <Text style={styles.menuText}>My Workouts</Text>
           </TouchableOpacity>

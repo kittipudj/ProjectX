@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../../src/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
-export default function SettingsScreen() {
+export default function SettingsScreen({ route }) {
   const router = useRouter();
   const [theme, setTheme] = useState("light");
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
@@ -33,7 +33,11 @@ export default function SettingsScreen() {
   }, []);
 
   const handleClosePress = () => {
-    router.back();
+    if (route?.params?.screen === "Profile") {
+      router.push("/tabs/Profile");
+    } else {
+      router.push("/Profile");
+    }
   };
 
   const toggleTheme = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Picker } from "react-native";
 import { auth, db } from "../../src/firebaseConfig"; // Corrected import path
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "expo-router"; // Import useRouter
@@ -8,6 +8,7 @@ export default function QuestionnaireScreen() {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
+  const [focus, setFocus] = useState("Full Body");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter(); // Initialize router
 
@@ -32,9 +33,10 @@ export default function QuestionnaireScreen() {
           weight: parseFloat(weight),
           height: parseFloat(height),
           age: parseInt(age, 10),
+          focus,
           questionnaireCompleted: true,
         }, { merge: true });
-        console.log("User data saved to Firestore:", { weight, height, age, questionnaireCompleted: true });
+        console.log("User data saved to Firestore:", { weight, height, age, focus, questionnaireCompleted: true });
         router.push("(tabs)/Home"); // Use router.push instead of navigation.navigate
       }
     } catch (error) {
@@ -71,6 +73,28 @@ export default function QuestionnaireScreen() {
         onChangeText={setAge}
         keyboardType="numeric"
       />
+      
+      <Text style={styles.label}>Focus Area:</Text>
+      <Picker
+        selectedValue={focus}
+        style={styles.picker}
+        onValueChange={(itemValue) => setFocus(itemValue)}
+      >
+        <Picker.Item label="Full Body" value="Full Body" />
+        <Picker.Item label="Upper Body" value="Upper Body" />
+        <Picker.Item label="Lower Body" value="Lower Body" />
+        <Picker.Item label="Core" value="Core" />
+        <Picker.Item label="Back" value="Back" />
+        <Picker.Item label="Cardio" value="Cardio" />
+        <Picker.Item label="Chest" value="Chest" />
+        <Picker.Item label="Lower Arms" value="Lower Arms" />
+        <Picker.Item label="Lower Legs" value="Lower Legs" />
+        <Picker.Item label="Neck" value="Neck" />
+        <Picker.Item label="Shoulders" value="Shoulders" />
+        <Picker.Item label="Upper Arms" value="Upper Arms" />
+        <Picker.Item label="Upper Legs" value="Upper Legs" />
+        <Picker.Item label="Waist" value="Waist" />
+      </Picker>
       
       {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
@@ -119,6 +143,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    borderColor: "#B0C4DE",
+    borderWidth: 1,
+    borderRadius: 10,
   },
   errorText: {
     color: "#ff5252",

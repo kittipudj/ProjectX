@@ -110,6 +110,9 @@ const Profile = ({ theme, setTheme }) => {
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{userData?.firstName}  {userData?.lastName}</Text>
               <Text style={styles.profileEmail}>{userData?.email}</Text>
+              <Text style={styles.profileDetail}>Age: {userData?.age}</Text>
+              <Text style={styles.profileDetail}>Weight: {userData?.weight} kg</Text>
+              <Text style={styles.profileDetail}>Height: {userData?.height} cm</Text>
             </View>
           </View>
 
@@ -211,6 +214,11 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   profileEmail: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 2,
+  },
+  profileDetail: {
     fontSize: 14,
     color: "#777",
     marginTop: 2,

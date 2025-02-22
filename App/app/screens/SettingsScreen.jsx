@@ -31,7 +31,7 @@ export default function SettingsScreen() {
     fetchUserData();
   }, []);
 
-  const handleBackPress = () => {
+  const handleClosePress = () => {
     router.back();
   };
 
@@ -41,10 +41,9 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-        <Ionicons name="arrow-back" size={24} color="#1f66f2" />
-        <Text style={styles.backButtonText}>Back</Text>
+      {/* Close Button */}
+      <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>
+        <Ionicons name="close" size={24} color="#1f66f2" />
       </TouchableOpacity>
 
       <Text style={styles.header}>Settings</Text>
@@ -53,7 +52,7 @@ export default function SettingsScreen() {
       <View style={styles.menuItem}>
         <Text style={styles.menuText}>Theme</Text>
         <View style={styles.switchContainer}>
-          <Text style={styles.switchText}>{theme === "light" ? "default" : "dark"}</Text>
+          <Text style={styles.switchText}>{theme === "light" ? "Default" : "Dark"}</Text>
           <Switch
             value={theme === "dark"}
             onValueChange={toggleTheme}
@@ -87,15 +86,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
     padding: 16,
   },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
+  closeButton: {
+    alignSelf: "flex-end",
     marginBottom: 20,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: "#1f66f2",
-    marginLeft: 5,
   },
   header: {
     fontSize: 24,

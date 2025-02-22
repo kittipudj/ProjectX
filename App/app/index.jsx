@@ -35,7 +35,7 @@ export default function Index() {
     if (!loading) {
       if (!user) {
         console.log("Navigating to Login");
-        router.push("/LoginScreen");
+        router.push("screens/LoginScreen");
       } else if (!questionnaireCompleted) {
         console.log("Navigating to Questionnaire");
         router.push("screens/QuestionnaireScreen");

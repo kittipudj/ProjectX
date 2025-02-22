@@ -39,7 +39,7 @@ export default function LoginScreen() {
         if (questionnaireCompleted) {
           router.replace("(tabs)/Home");
         } else {
-          router.replace("/screens/QuestionnaireScreen"); // Ensure this route matches your app's structure
+          router.replace("/app/screens/QuestionnaireScreen"); // Ensure this route matches your app's structure
         }
       }
     } catch (error) {
@@ -88,7 +88,7 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/screens/SignUpScreen")}>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push("/app/screens/SignUpScreen")}>
         <Text style={styles.secondaryButtonText}>Create an Account</Text>
       </TouchableOpacity>
     </View>

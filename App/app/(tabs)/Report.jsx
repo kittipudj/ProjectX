@@ -1,9 +1,11 @@
 import { React, useState, useEffect } from "react";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet,ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
 import { auth, db } from '../../src/firebaseConfig'; // Import Firebase
-import { doc, getDoc } from 'firebase/firestore'; // Firestore functions
+import { doc, getDoc,getFirestore } from 'firebase/firestore'; // Firestore functions
+import { ProgressBar } from 'react-native-paper';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function ReportScreen() {
   const [workOut, setWorkOut] = useState(0);
@@ -54,6 +56,7 @@ export default function ReportScreen() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Header />
+        <ScrollView>
         <Stats workOut={workOut} Kcal={Kcal} Time={Time} />
         <Calendar
           style={styles.calendar}
@@ -73,6 +76,8 @@ export default function ReportScreen() {
             console.log("Selected day", day);
           }}
         />
+        <BMIComponent/>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -108,6 +113,76 @@ const Stats = ({ workOut, Kcal, Time }) => {
         <Text style={styles.value}>{Time} min</Text>
       </View>
     </SafeAreaView>
+  );
+};
+const BMIComponent = () => {
+  const [weight, setWeight] = useState("-");
+  const [height, setHeight] = useState("-");
+  const [uid, setUid] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUid(user.uid);
+      } else {
+        console.log("No user is signed in.");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (uid) {
+        const db = getFirestore();
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setWeight(data.weight);
+          setHeight(parseFloat(data.height));
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchData();
+  }, [uid]);
+
+  const heightInMeters = height / 100;
+  const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+  let category = '';
+  let progress = 0;
+  let color = '#4CAF50';
+
+  if (bmi < 18.5) {
+    category = 'น้ำหนักต่ำกว่าเกณฑ์';
+    progress = 0.2;
+    color = '#2196F3';
+  } else if (bmi >= 18.5 && bmi < 25) {
+    category = 'น้ำหนักเพื่อสุขภาพ';
+    progress = 0.5;
+    color = '#4CAF50';
+  } else if (bmi >= 25 && bmi < 30) {
+    category = 'น้ำหนักเกิน';
+    progress = 0.75;
+    color = '#FFC107';
+  } else {
+    category = 'โรคอ้วน';
+    progress = 1;
+    color = '#F44336';
+  }
+  return (
+    <View style={styles.container1}>
+      <Text style={styles.title}>BMI (kg/m²)</Text>
+      <Text style={styles.bmi}>{bmi}</Text>
+      <Text style={[styles.category, { color }]}>{category}</Text>
+      <ProgressBar progress={progress} color={color} style={styles.progressBar} />
+    </View>
   );
 };
 
@@ -164,5 +239,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  container1: {
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    elevation: 5,
+    marginTop:20,
+},
+title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+},
+bmi: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
+},
+category: {
+    fontSize: 16,
+    marginBottom: 10,
+},
+progressBar: {
+    width: '100%',
+    height: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+},
+input: {
+    width: '80%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+},
 });
 

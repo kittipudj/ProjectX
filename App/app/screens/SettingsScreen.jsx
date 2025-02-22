@@ -8,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 export default function SettingsScreen() {
   const router = useRouter();
   const [theme, setTheme] = useState("light");
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,6 +40,10 @@ export default function SettingsScreen() {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
+  const toggleNotifications = () => {
+    setIsNotificationsEnabled((prev) => !prev);
+  };
+
   return (
     <View style={styles.container}>
       {/* Close Button */}
@@ -61,9 +66,16 @@ export default function SettingsScreen() {
       </View>
 
       {/* Notification Settings */}
-      <TouchableOpacity style={styles.menuItem}>
+      <View style={styles.menuItem}>
         <Text style={styles.menuText}>App Notifications</Text>
-      </TouchableOpacity>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchText}>{isNotificationsEnabled ? "Off" : "On"}</Text>
+          <Switch
+            value={isNotificationsEnabled}
+            onValueChange={toggleNotifications}
+          />
+        </View>
+      </View>
 
       {/* Account Settings */}
       <TouchableOpacity style={styles.menuItem}>

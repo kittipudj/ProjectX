@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { auth, db } from "../../src/firebaseConfig"; // Corrected import path
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "expo-router"; // Import useRouter
@@ -8,20 +8,38 @@ export default function QuestionnaireScreen() {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter(); // Initialize router
 
   const handleSubmit = async () => {
-    const user = auth.currentUser;
-    if (user) {
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(userRef, {
-        weight,
-        height,
-        age,
-        questionnaireCompleted: true,
-      }, { merge: true });
-      console.log("User data saved to Firestore:", { weight, height, age, questionnaireCompleted: true });
-      router.push("(tabs)/Home"); // Use router.push instead of navigation.navigate
+    setErrorMessage("");
+
+    if (!weight || !height || !age) {
+      setErrorMessage("⚠️ All fields are required.");
+      return;
+    }
+
+    if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+      setErrorMessage("⚠️ Please enter valid numeric values.");
+      return;
+    }
+
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          weight,
+          height,
+          age,
+          questionnaireCompleted: true,
+        }, { merge: true });
+        console.log("User data saved to Firestore:", { weight, height, age, questionnaireCompleted: true });
+        router.push("(tabs)/Home"); // Use router.push instead of navigation.navigate
+      }
+    } catch (error) {
+      console.error("❌ Error saving data:", error.message);
+      setErrorMessage(`⚠️ ${error.message}`);
     }
   };
 
@@ -54,6 +72,8 @@ export default function QuestionnaireScreen() {
         keyboardType="numeric"
       />
       
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
@@ -99,6 +119,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
+  },
+  errorText: {
+    color: "#ff5252",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#3b7dd8",

@@ -33,10 +33,15 @@ export default function LoginScreen() {
         Alert.alert("Notice", "Your profile data is missing. Please update your profile.");
       } else {
         console.log("📄 User profile data:", userDoc.data());
-      }
+        const { questionnaireCompleted } = userDoc.data();
 
-      // ✅ Redirect to Home
-      router.replace("/Home");
+        // ✅ Redirect based on questionnaireCompleted field
+        if (questionnaireCompleted) {
+          router.replace("(tabs)/Home");
+        } else {
+          router.replace("/screens/QuestionnaireScreen"); // Ensure this route matches your app's structure
+        }
+      }
     } catch (error) {
       console.error("❌ Login error:", error.code, error.message);
 
@@ -58,7 +63,6 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      
       <Image style={styles.profilePicture} source={require("../../assets/images/logo.png")} />
       <Text style={styles.subHeader}>Login to continue</Text>
 

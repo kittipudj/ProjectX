@@ -6,21 +6,26 @@ import { auth, db } from "../../src/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
+  const [theme, setTheme] = useState("light");
+
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Profile />
+      <SafeAreaView style={theme === "light" ? styles.containerLight : styles.containerDark}>
+        <Profile theme={theme} setTheme={setTheme} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-const Profile = () => {
+const Profile = ({ theme, setTheme }) => {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Fetch User Data from Firestore
   useEffect(() => {
@@ -56,6 +61,23 @@ const Profile = () => {
     }
   };
 
+  const handleSettingsPress = () => {
+    router.push("/screens/SettingsScreen");
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.profileContainer}>
       {loading ? (
@@ -65,13 +87,28 @@ const Profile = () => {
 
           {/* Rounded Profile Section */}
           <View style={styles.profileCard}>
-            <Image
-              style={styles.profilePicture}
-              source={require("../../assets/images/profile-icon-design-free-vector.jpg")}
-            />
+            <TouchableOpacity
+              onPress={pickImage}
+              style={styles.profilePictureContainer}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <Image
+                style={styles.profilePicture}
+                source={profileImage ? { uri: profileImage } : require("../../assets/images/profile-icon-design-free-vector.jpg")}
+              />
+              {isHovered && (
+                <View style={styles.profilePictureOverlay}>
+                  <MaterialCommunityIcons name="pencil" size={24} color="rgba(255, 255, 255, 0.7)" />
+                </View>
+              )}
+            </TouchableOpacity>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
+              <Text style={styles.profileName}>{userData?.firstName}  {userData?.lastName}</Text>
               <Text style={styles.profileEmail}>{userData?.email}</Text>
+              <Text style={styles.profileDetail}>Age: {userData?.age}</Text>
+              <Text style={styles.profileDetail}>Weight: {userData?.weight} kg</Text>
+              <Text style={styles.profileDetail}>Height: {userData?.height} cm</Text>
             </View>
           </View>
 
@@ -82,7 +119,7 @@ const Profile = () => {
           </TouchableOpacity>
 
           {/* Settings */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
             <Ionicons name="settings-outline" size={24} color="#1f66f2" />
             <Text style={styles.menuText}>Settings</Text>
           </TouchableOpacity>
@@ -99,11 +136,17 @@ const Profile = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerLight: {
     flex: 1,
     backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
-    paddingTop: 40, // ✅ Adjusted to move content higher
+    paddingTop: 40,
+  },
+  containerDark: {
+    flex: 1,
+    backgroundColor: "#333",
+    paddingHorizontal: 16,
+    paddingTop: 40,
   },
   profileContainer: {
     flex: 1,
@@ -132,19 +175,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    marginBottom: 15, // ✅ Reduced spacing to move up
+    marginBottom: 15,
   },
-  profilePicture: {
+  profilePictureContainer: {
+    position: "relative",
     width: 90,
     height: 90,
+  },
+  profilePicture: {
+    width: "100%",
+    height: "100%",
     borderRadius: 45,
     borderWidth: 3,
     borderColor: "#1f66f2",
+  },
+  profilePictureOverlay: {
     position: "absolute",
-    top: -45,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    borderRadius: 45,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileInfo: {
-    marginTop: 50,
+    marginTop: 10,
     alignItems: "center",
   },
   profileName: {
@@ -157,6 +214,11 @@ const styles = StyleSheet.create({
     color: "#777",
     marginTop: 2,
   },
+  profileDetail: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 2,
+  },
 
   /* Menu */
   menuItem: {
@@ -165,7 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 12,
     borderRadius: 10,
-    marginBottom: 10, // ✅ Reduced spacing
+    marginBottom: 10,
     width: "100%",
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -190,7 +252,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     elevation: 3,
-    marginTop: 10, // ✅ Reduced spacing
+    marginTop: 10,
   },
   logoutText: {
     color: "#FFFFFF",
@@ -199,4 +261,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-

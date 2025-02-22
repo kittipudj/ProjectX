@@ -35,13 +35,14 @@ const SignUpScreen = () => {
 
       // ✅ Save user data in Firestore
       await setDoc(doc(db, "users", user.uid), {
-        firstName,
-        lastName,
-        email,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        questionnaireCompleted: false,  // Add questionnaireCompleted field
       });
 
       Alert.alert("Success", "Account created successfully!");
-      router.replace("/Home");
+      router.replace("/screens/QuestionnaireScreen");  // Navigate to Questionnaire screen
     } catch (error) {
       console.error("❌ Sign-up error:", error.message);
       setErrorMessage(`⚠️ ${error.message}`);

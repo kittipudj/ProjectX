@@ -29,9 +29,9 @@ export default function QuestionnaireScreen() {
       if (user) {
         const userRef = doc(db, "users", user.uid);
         await setDoc(userRef, {
-          weight,
-          height,
-          age,
+          weight: parseFloat(weight),
+          height: parseFloat(height),
+          age: parseInt(age, 10),
           questionnaireCompleted: true,
         }, { merge: true });
         console.log("User data saved to Firestore:", { weight, height, age, questionnaireCompleted: true });

@@ -38,10 +38,11 @@ const SignUpScreen = () => {
         firstName,
         lastName,
         email,
+        questionnaireCompleted: false,  // Add questionnaireCompleted field
       });
 
       Alert.alert("Success", "Account created successfully!");
-      router.replace("/Home");
+      router.replace("/screens/QuestionnaireScreen");  // Navigate to Questionnaire screen
     } catch (error) {
       console.error("❌ Sign-up error:", error.message);
       setErrorMessage(`⚠️ ${error.message}`);

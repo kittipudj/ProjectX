@@ -1,19 +1,42 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { auth, db } from "../../src/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function SettingsScreen() {
   const router = useRouter();
   const [theme, setTheme] = useState("light");
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+          // Handle user data if needed
+        } else {
+          console.log("⚠️ No user data found in Firestore");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleBackPress = () => {
     router.back();
   };
 
-  const handleThemeChange = (selectedTheme) => {
-    setTheme(selectedTheme);
-    // Apply the theme change logic here
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (
@@ -27,26 +50,16 @@ export default function SettingsScreen() {
       <Text style={styles.header}>Settings</Text>
 
       {/* Theme Settings */}
-      <TouchableOpacity style={styles.menuItem} onPress={() => setTheme("themeOptions")}>
-        <Text style={styles.menuText}>Change Theme</Text>
-      </TouchableOpacity>
-
-      {theme === "themeOptions" && (
-        <View style={styles.themeOptions}>
-          <TouchableOpacity
-            style={styles.themeButton}
-            onPress={() => handleThemeChange("light")}
-          >
-            <Text style={styles.themeButtonText}>Light Mode</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.themeButton}
-            onPress={() => handleThemeChange("dark")}
-          >
-            <Text style={styles.themeButtonText}>Dark Mode</Text>
-          </TouchableOpacity>
+      <View style={styles.menuItem}>
+        <Text style={styles.menuText}>Theme</Text>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchText}>{theme === "light" ? "default" : "dark"}</Text>
+          <Switch
+            value={theme === "dark"}
+            onValueChange={toggleTheme}
+          />
         </View>
-      )}
+      </View>
 
       {/* Notification Settings */}
       <TouchableOpacity style={styles.menuItem}>
@@ -58,10 +71,12 @@ export default function SettingsScreen() {
         <Text style={styles.menuText}>Account Settings</Text>
       </TouchableOpacity>
 
-      {/* App Version */}
-      <TouchableOpacity style={styles.menuItem}>
-        <Text style={styles.menuText}>App Version</Text>
-      </TouchableOpacity>
+      {/* App Version and Additional Information */}
+      <View style={styles.infoContainer}>
+        <Text style={styles.infoText}>Version 0.00.01 (BETA TEST)</Text>
+        <Text style={styles.infoText}>Workout Planner and the Workout Planner Logo are trademarks of Workout Planner Inc. All rights reserved.</Text>
+        <Text style={styles.infoText}>Workout Planner for mobile is built using open-source software.</Text>
+      </View>
     </View>
   );
 }
@@ -97,30 +112,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   menuText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
   },
-  themeOptions: {
-    marginTop: 10,
-    marginBottom: 20,
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  themeButton: {
-    backgroundColor: "#fff",
+  switchText: {
+    fontSize: 16,
+    color: "#333",
+    marginRight: 10,
+  },
+  infoContainer: {
+    marginTop: 20,
     padding: 10,
+    backgroundColor: "#fff",
     borderRadius: 10,
-    marginBottom: 10,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
   },
-  themeButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
+  infoText: {
+    fontSize: 14,
     color: "#333",
-    textAlign: "center",
+    marginBottom: 5,
   },
 });

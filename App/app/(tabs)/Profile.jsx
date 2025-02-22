@@ -108,7 +108,7 @@ const Profile = ({ theme, setTheme }) => {
               )}
             </TouchableOpacity>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
+              <Text style={styles.profileName}>{userData?.firstName}  {userData?.lastName}</Text>
               <Text style={styles.profileEmail}>{userData?.email}</Text>
             </View>
           </View>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileInfo: {
-    marginTop: 50,
+    marginTop: 10,
     alignItems: "center",
   },
   profileName: {

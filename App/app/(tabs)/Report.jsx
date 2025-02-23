@@ -267,7 +267,7 @@ const WaterIntakeComponent = () => {
   }, [uid, currentDate]);
 
   const increaseWaterIntake = () => setWaterIntake((prev) => prev + 1);
-  const decreaseWaterIntake = () => setWaterIntake((prev) => ( prev - 1 : 0));
+  const decreaseWaterIntake = () => setWaterIntake((prev) => prev - 1 );
 
   const confirmWaterIntake = async () => {
     if (uid) {
@@ -294,8 +294,8 @@ const WaterIntakeComponent = () => {
     <View style={styles.container1}>
       <Text style={styles.title}>Water Intake</Text>
       <Text style={styles.waterIntakeText}>
-        <Text style={{ color: '#32CD32' }}>{totalWaterIntake}</Text> / {recommendedWaterIntake}
-      </Text>
+        <Text style={{ color: '#32CD32' }}>{totalWaterIntake}</Text> / {recommendedWaterIntake} <Text style={{fontSize:14  }}>cups per day</Text>
+       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.smallerButton} onPress={decreaseWaterIntake}>
           <Text style={styles.buttonText}>-</Text>
@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginHorizontal: 10,
+    alignItems: 'center'
   },
   confirmButton: {
     backgroundColor: '#1f66f2',

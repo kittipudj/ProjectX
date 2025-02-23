@@ -54,7 +54,7 @@ const DetailScreen = () => {
         setCurrentExerciseIndex((prevIndex) => prevIndex + 1);
         fadeAnim.setValue(1);
         scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-        setRemainingTime(60); // Reset remaining time to 60 seconds
+        setRemainingTime(20); // Reset remaining time to 60 seconds
       });
     } else {
       setShowCompletionAnimation(true);
@@ -72,7 +72,7 @@ const DetailScreen = () => {
         setCurrentExerciseIndex((prevIndex) => prevIndex - 1);
         fadeAnim.setValue(1);
         scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-        setRemainingTime(60); // Reset remaining time to 60 seconds
+        setRemainingTime(20); // Reset remaining time to 60 seconds
       });
     }
   };
@@ -159,7 +159,7 @@ const DetailScreen = () => {
 
   useEffect(() => {
     if (Time) {
-      setRemainingTime(currentExercise.time*60); // Set remaining time to 60 seconds
+      setRemainingTime(20); // Set remaining time to 60 seconds
       setProgress(1);
     }
   }, [Time]);

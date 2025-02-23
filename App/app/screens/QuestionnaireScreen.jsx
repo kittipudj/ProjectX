@@ -10,6 +10,12 @@ export default function QuestionnaireScreen() {
   const [age, setAge] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter(); // Initialize router
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const questions = [
+    "How often do you exercise?",
+    "What is your fitness goal?",
+    "Do you have any dietary restrictions?",
+  ];
 
   const handleSubmit = async () => {
     setErrorMessage("");
@@ -40,6 +46,14 @@ export default function QuestionnaireScreen() {
     } catch (error) {
       console.error("❌ Error saving data:", error.message);
       setErrorMessage(`⚠️ ${error.message}`);
+    }
+  };
+
+  const handleNextQuestion = () => {
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex(questionIndex + 1);
+    } else {
+      router.push('/Home'); // Ensure this route matches your defined routes
     }
   };
 
@@ -76,6 +90,11 @@ export default function QuestionnaireScreen() {
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.questionText}>{questions[questionIndex]}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleNextQuestion}>
+        <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
     </View>
   );
@@ -138,5 +157,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  questionText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
   },
 });

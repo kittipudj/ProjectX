@@ -3,24 +3,25 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, ActivityIndicator } fr
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../src/firebaseConfig";
-import { doc, getDoc,updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 export default function ProfileScreen() {
-  const [theme, setTheme] = useState("light");
+  const { theme } = useTheme(); // Use theme from context
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={theme === "light" ? styles.containerLight : styles.containerDark}>
-        <Profile theme={theme} setTheme={setTheme} />
+        <Profile theme={theme} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-const Profile = ({ theme, setTheme }) => {
+const Profile = ({ theme }) => {
   const router = useRouter();
   const [userData, setUserData] = useState({ weight: "", height: "", age: "" });
   const [loading, setLoading] = useState(true);
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   },
   containerDark: {
     flex: 1,
-    backgroundColor: "#333",
+    backgroundColor: "#222",
     paddingHorizontal: 16,
     paddingTop: 40,
   },

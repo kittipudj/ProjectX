@@ -4,8 +4,10 @@ import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { auth, db } from '../../src/firebaseConfig'; // Import Firebase
 import { doc, getDoc } from 'firebase/firestore'; // Firestore functions
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 export default function HomeScreen(props) {
+  const { theme } = useTheme(); // Use theme from context
   const [finishedDays, setFinishedDays] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const user = auth.currentUser;
@@ -35,29 +37,29 @@ export default function HomeScreen(props) {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Header head="Full body" />
-        <ProgressBar dayLeft={daysLeft} />
-        <DayList finishedDays={finishedDays} />
+      <SafeAreaView style={[styles.container, { backgroundColor: theme === "light" ? "#f8f9fa" : "#222" }]}>
+        <Header head="Full body" theme={theme} />
+        <ProgressBar dayLeft={daysLeft} theme={theme} /> {/* Pass theme to ProgressBar */}
+        <DayList finishedDays={finishedDays} theme={theme} /> {/* Pass theme to DayList */}
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-const Header = (props) => {
+const Header = ({ head, theme }) => {
   return (
     <SafeAreaView>
-      <Text style={styles.header}>{props.head} in 30 days</Text>
+      <Text style={[styles.header, { color: theme === "light" ? "#1f66f2" : "#FFD700" }]}>{head} in 30 days</Text>
     </SafeAreaView>
   );
 };
 
-const ProgressBar = ({ dayLeft }) => {
+const ProgressBar = ({ dayLeft, theme }) => {
   const progress = ((30 - dayLeft) / 30) * 100;
 
   return (
     <SafeAreaView>
-      <Text style={styles.progressStyle}>{dayLeft} DAYS LEFT</Text>
+      <Text style={[styles.progressStyle, { color: "#FFFFFF", backgroundColor: "rgb(15, 44, 88)" }]}>{dayLeft} DAYS LEFT</Text>
       <View style={styles.progressBarContainer}>
         <View style={[styles.progressBar, { width: `${progress}%` }]} />
       </View>
@@ -65,7 +67,7 @@ const ProgressBar = ({ dayLeft }) => {
   );
 };
 
-const DayList = ({ finishedDays }) => {
+const DayList = ({ finishedDays, theme }) => {
   return (
     <ScrollView style={styles.dayListContainer}>
       {Array.from({ length: 30 }, (_, i) => {
@@ -74,13 +76,17 @@ const DayList = ({ finishedDays }) => {
         const isLocked = !isFinished && !finishedDays.includes(day - 1) && day !== 1;
 
         return (
-          <View style={[styles.dayItem, isFinished && styles.finishedDayItem]} key={i}>
+          <View style={[styles.dayItem, isFinished && styles.finishedDayItem, { backgroundColor: "#fff" }]} key={i}>
             <Text style={styles.dayText}>Day {day}</Text>
             {isFinished ? (
               <Image source={require('./checkmark.png')} style={styles.checkmark} />
             ) : (
               <TouchableOpacity
-                style={[styles.startButton, isLocked && styles.lockedButton]}
+                style={[
+                  styles.startButton,
+                  isLocked && styles.lockedButton,
+                  !isLocked && { backgroundColor: theme === "light" ? "#1f66f2" : "#555" } // Apply theme to button only if not locked
+                ]}
                 onPress={() => !isLocked && router.push({ pathname: "/DetailScreen", params: { days: day } })}
                 disabled={isLocked}
               >
@@ -97,26 +103,24 @@ const DayList = ({ finishedDays }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1f66f2",
     textAlign: "center",
     marginBottom: 10,
   },
   progressStyle: {
-    backgroundColor: "#202A44",
     borderRadius: 12,
     padding: 15,
     fontSize: 16,
     textAlign: "center",
     fontWeight: "bold",
-    color: "white",
     elevation: 5,
+    backgroundColor: "rgb(15, 44, 88)",
+    color: "#FFFFFF", // Change text color to white
   },
   dayListContainer: {
     flex: 1,
@@ -126,7 +130,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#fff",
     padding: 15,
     marginVertical: 5,
     borderRadius: 12,
@@ -140,7 +143,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   startButton: {
-    backgroundColor: "#1f66f2",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,

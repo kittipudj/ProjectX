@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // Ensure useState is imported
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../../src/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function SettingsScreen({ route }) {
   const router = useRouter();
-  const [theme, setTheme] = useState("light");
+  const { theme, toggleTheme } = useTheme();
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
 
   useEffect(() => {
@@ -40,16 +41,12 @@ export default function SettingsScreen({ route }) {
     }
   };
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   const toggleNotifications = () => {
     setIsNotificationsEnabled((prev) => !prev);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme === "light" ? "#f8f9fa" : "#333" }]}>
       {/* Close Button */}
       <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>
         <Ionicons name="close" size={24} color="#1f66f2" />
@@ -99,7 +96,6 @@ export default function SettingsScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
     padding: 16,
   },
   closeButton: {

@@ -3,16 +3,18 @@ import React from 'react'
 import { Text, ScrollView, StyleSheet, Image, TouchableOpacity,View} from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import YoutubePlayer from 'react-native-youtube-iframe';
-
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 export default function DiscoverScreen(props) {
+    const { theme } = useTheme(); // Use theme from context
+
     return (
       <SafeAreaProvider >
-        <SafeAreaView style = {styles.container}>
+        <SafeAreaView style = {[styles.container, { backgroundColor: theme === "light" ? "#f8f9fa" : "#222" }]}>
           <Header/>
           <Custom/>
         </SafeAreaView>
-        <SafeAreaView style = {styles.container1}>
+        <SafeAreaView style = {[styles.container1, { backgroundColor: theme === "light" ? "#f8f9fa" : "#222" }]}>
           <Toppick/>
           <Youtube/>
         </SafeAreaView>
@@ -102,13 +104,11 @@ const Youtube = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 1,
   },
   container1: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 1,
   },

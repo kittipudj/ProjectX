@@ -6,8 +6,10 @@ import { auth, db } from '../../src/firebaseConfig'; // Import Firebase
 import { doc, getDoc,getFirestore } from 'firebase/firestore'; // Firestore functions
 import { ProgressBar } from 'react-native-paper';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 export default function ReportScreen() {
+  const { theme } = useTheme(); // Use theme from context
   const [workOut, setWorkOut] = useState(0);
   const [Kcal, setKcal] = useState(0);
   const [Time, setTime] = useState(0);
@@ -54,7 +56,7 @@ export default function ReportScreen() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: theme === "light" ? "#f8f9fa" : "#222" }]}>
         <Header />
         <ScrollView>
         <Stats workOut={workOut} Kcal={Kcal} Time={Time} />
@@ -189,7 +191,6 @@ const BMIComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
     paddingHorizontal: 16,
     paddingVertical: 10,
   },

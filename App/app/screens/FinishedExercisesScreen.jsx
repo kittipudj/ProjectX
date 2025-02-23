@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator,TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { auth, db } from '../../src/firebaseConfig'; // Import Firebase
-import { doc, getDoc } from 'firebase/firestore'; // Firestore functions
+import { Ionicons } from "@expo/vector-icons";
+import { auth, db } from '../../src/firebaseConfig'; 
+import { doc, getDoc } from 'firebase/firestore';
+import { useRouter } from "expo-router";
 
 export default function FinishedExercisesScreen() {
   const [finishedExercises, setFinishedExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const user = auth.currentUser;
+  const router = useRouter();
+
+  const handleClosePress = () => {
+    router.push("/(tabs)/Profile");
+  };
 
   useEffect(() => {
     const loadFinishedExercises = async () => {
@@ -25,7 +32,7 @@ export default function FinishedExercisesScreen() {
       setFinishedExercises(exercises);
       setLoading(false); // Set loading to false after data is fetched
     };
-
+  
     loadFinishedExercises();
   }, [user]);
 
@@ -35,6 +42,9 @@ export default function FinishedExercisesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>
+          <Ionicons name="close" size={24} color="#1f66f2" />
+      </TouchableOpacity>
       <Text style={styles.header}>Finished Exercises</Text>
       <ScrollView>
         {finishedExercises.map((exercise, index) => (
@@ -83,5 +93,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    marginBottom: 20,
   },
 });

@@ -69,6 +69,9 @@ const Profile = ({ theme }) => {
   const handleEditPress = () => {
     router.push("/screens/EditProfileScreen");
   };
+  const handleFinishPress = () => {
+    router.push("/screens/FinishedExercisesScreen");
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -136,7 +139,7 @@ const Profile = ({ theme }) => {
           </TouchableOpacity>
 
           {/* My Workouts */}
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleFinishPress}>
             <MaterialCommunityIcons name="dumbbell" size={24} color="#1f66f2" />
             <Text style={styles.menuText}>My Workouts</Text>
           </TouchableOpacity>

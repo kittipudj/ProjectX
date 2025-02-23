@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity, ActivityIndicator, TextInput } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../src/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore"; // ✅ Import updateDoc
+import { doc, getDoc,updateDoc } from "firebase/firestore";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
@@ -26,12 +26,6 @@ const Profile = ({ theme, setTheme }) => {
   const [loading, setLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [age, setAge] = useState("");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
 
   // Fetch User Data from Firestore
   useEffect(() => {
@@ -71,9 +65,8 @@ const Profile = ({ theme, setTheme }) => {
   const handleSettingsPress = () => {
     router.push("/screens/SettingsScreen");
   };
-
-  const handleMyWorkoutsPress = () => {
-    router.push("/Discover");
+  const handleEditPress = () => {
+    router.push("/screens/EditProfileScreen");
   };
 
   const pickImage = async () => {
@@ -99,36 +92,6 @@ const Profile = ({ theme, setTheme }) => {
       } catch (error) {
         console.error("❌ Error updating profile image:", error);
       }
-    }
-  };
-
-  const startEditing = () => {
-    setFirstName(userData.firstName || "");
-    setLastName(userData.lastName || "");
-    setAge(userData.age || "");
-    setWeight(userData.weight || "");
-    setHeight(userData.height || "");
-    setIsEditing(true);
-  };
-
-  const saveChanges = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
-        firstName,
-        lastName,
-        age,
-        weight,
-        height,
-      });
-      setUserData({ ...userData, firstName, lastName, age, weight, height });
-      setIsEditing(false);
-      console.log("✅ User data updated in Firestore");
-    } catch (error) {
-      console.error("❌ Error updating user data:", error);
     }
   };
 
@@ -162,64 +125,17 @@ const Profile = ({ theme, setTheme }) => {
               )}
             </TouchableOpacity>
             <View style={styles.profileInfo}>
-              {isEditing ? (
-                <>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="First Name"
-                    value={firstName}
-                    onChangeText={setFirstName}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChangeText={setLastName}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Age"
-                    value={age}
-                    onChangeText={setAge}
-                    keyboardType="numeric"
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Weight (kg)"
-                    value={weight}
-                    onChangeText={setWeight}
-                    keyboardType="numeric"
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Height (cm)"
-                    value={height}
-                    onChangeText={setHeight}
-                    keyboardType="numeric"
-                  />
-                  <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
-                    <Text style={styles.saveButtonText}>Save</Text>
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.profileName}>
-                    {userData?.firstName} {userData?.lastName}
-                    <TouchableOpacity onPress={startEditing}>
-                      <MaterialCommunityIcons name="pencil" size={16} color="#1f66f2" />
-                    </TouchableOpacity>
-                  </Text>
-                  <Text style={styles.profileEmail}>{userData?.email}</Text>
-                  <Text style={styles.profileDetail}>Weight: {userData.weight} kg</Text>
-                  <Text style={styles.profileDetail}>Height: {userData.height} cm</Text>
-                  <Text style={styles.profileDetail}>Age: {userData.age} years</Text>
-                </>
-              )}
+              <Text style={styles.profileName}>{userData?.firstName} {userData?.lastName}</Text>
+              <Text style={styles.profileEmail}>{userData?.email}</Text>
             </View>
           </View>
+          <TouchableOpacity style={styles.menuItem} onPress={handleEditPress}>
+            <MaterialCommunityIcons name="account-edit" size={24} color="#1f66f2" />
+            <Text style={styles.menuText}>My Profile</Text>
+          </TouchableOpacity>
 
           {/* My Workouts */}
-          <TouchableOpacity style={styles.menuItem} onPress={handleMyWorkoutsPress}>
+          <TouchableOpacity style={styles.menuItem}>
             <MaterialCommunityIcons name="dumbbell" size={24} color="#1f66f2" />
             <Text style={styles.menuText}>My Workouts</Text>
           </TouchableOpacity>
@@ -324,24 +240,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#777",
     marginTop: 2,
-  },
-  input: {
-    width: "80%",
-    padding: 10,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  saveButton: {
-    backgroundColor: "#1f66f2",
-    padding: 10,
-    borderRadius: 5,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
   },
 
   /* Menu */

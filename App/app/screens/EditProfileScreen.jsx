@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../../src/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 export default function EditProfileScreen() {
+  const { theme } = useTheme(); // Use theme from context
   const router = useRouter();
   const [userData, setUserData] = useState({ firstName: "", lastName: "", email: "", weight: "", height: "", age: "" });
   const [isEditing, setIsEditing] = useState({ firstName: false, lastName: false, email: false, weight: false, height: false, age: false });
@@ -59,7 +61,7 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={theme === "light" ? styles.containerLight : styles.containerDark}>
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>
             <Ionicons name="close" size={24} color="#1f66f2" />
@@ -95,9 +97,14 @@ export default function EditProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerLight: {
     flex: 1,
     backgroundColor: "#f8f9fa",
+    padding: 16,
+  },
+  containerDark: {
+    flex: 1,
+    backgroundColor: "#222",
     padding: 16,
   },
   closeButton: {

@@ -78,11 +78,6 @@ export default function SettingsScreen({ route }) {
         </View>
       </View>
 
-      {/* Account Settings */}
-      <TouchableOpacity style={styles.menuItem}>
-        <Text style={styles.menuText}>Account Settings</Text>
-      </TouchableOpacity>
-
       {/* App Version and Additional Information */}
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>Version 0.00.01 (BETA TEST)</Text>

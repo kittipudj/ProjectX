@@ -267,7 +267,7 @@ const WaterIntakeComponent = () => {
   }, [uid, currentDate]);
 
   const increaseWaterIntake = () => setWaterIntake((prev) => prev + 1);
-  const decreaseWaterIntake = () => setWaterIntake((prev) => (prev > 0 ? prev - 1 : 0));
+  const decreaseWaterIntake = () => setWaterIntake((prev) => ( prev - 1 : 0));
 
   const confirmWaterIntake = async () => {
     if (uid) {

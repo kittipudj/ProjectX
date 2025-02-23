@@ -6,6 +6,7 @@ import { auth, db } from '../src/firebaseConfig'; // Updated import statement
 import { doc, getDoc, setDoc } from 'firebase/firestore'; // Firestore functions
 import { Entypo } from '@expo/vector-icons'; // Import Entypo for 3-dots icon
 import LottieView from 'lottie-react-native'; // Import LottieView
+import { ProgressBar } from 'react-native-paper'; // Import ProgressBar from react-native-paper
 
 const DetailScreen = () => {
   const { days } = useLocalSearchParams();
@@ -13,11 +14,14 @@ const DetailScreen = () => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [workOut, setWorkOut] = useState(0);
   const [Kcal, setKcal] = useState(0);
-  const [Time, setTime] = useState(0);
+  const [Time, setTime] = useState(1); // Set initial time to 1 minute
   const [allFinished, setAllFinished] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [setsInput, setSetsInput] = useState('');
   const [showCompletionAnimation, setShowCompletionAnimation] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(60); // Set initial remaining time to 60 seconds
+  const [progress, setProgress] = useState(1);
+  const [isPaused, setIsPaused] = useState(false); // Add state for pause functionality
   const user = auth.currentUser;
   const scrollViewRef = useRef(null);
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -50,6 +54,7 @@ const DetailScreen = () => {
         setCurrentExerciseIndex((prevIndex) => prevIndex + 1);
         fadeAnim.setValue(1);
         scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+        setRemainingTime(60); // Reset remaining time to 60 seconds
       });
     } else {
       setShowCompletionAnimation(true);
@@ -67,6 +72,7 @@ const DetailScreen = () => {
         setCurrentExerciseIndex((prevIndex) => prevIndex - 1);
         fadeAnim.setValue(1);
         scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+        setRemainingTime(60); // Reset remaining time to 60 seconds
       });
     }
   };
@@ -151,6 +157,28 @@ const DetailScreen = () => {
     }
   }, [days, user]);
 
+  useEffect(() => {
+    if (Time) {
+      setRemainingTime(currentExercise.time*60); // Set remaining time to 60 seconds
+      setProgress(1);
+    }
+  }, [Time]);
+
+  useEffect(() => {
+    if (remainingTime > 0 && !isPaused) {
+      const interval = setInterval(() => {
+        setRemainingTime((prevTime) => {
+          const newTime = prevTime - 1;
+          setProgress(newTime / 60);
+          return newTime;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    } else if (remainingTime === 0) {
+      handleNextExercise();
+    }
+  }, [remainingTime, isPaused]);
+
   const saveExercisesToFirestore = (exercises) => {
     if (!user) return;
     setDoc(doc(db, "users", user.uid, "progress", `day${days}`), { exercises }, { merge: true });
@@ -188,6 +216,8 @@ const DetailScreen = () => {
           <Text style={styles.exerciseText}>Sets: {currentExercise.sets}</Text>
           <Text style={styles.exerciseText}>Calories Burned: {currentExercise.caloriesBurned} kcal</Text>
           <Text style={styles.exerciseText}>Time: {currentExercise.time} min</Text>
+          <Text style={styles.timerText}>{Math.floor(remainingTime / 60)}:{remainingTime % 60 < 10 ? '0' : ''}{remainingTime % 60}</Text>
+          <ProgressBar progress={progress} color="#1f66f2" style={styles.progressBar} />
           <TouchableOpacity style={styles.settingsButton} onPress={() => setModalVisible(true)}>
             <Entypo name="dots-three-vertical" size={24} color="black" />
           </TouchableOpacity>
@@ -197,9 +227,13 @@ const DetailScreen = () => {
         <TouchableOpacity style={styles.navButton} onPress={handlePreviousExercise} disabled={currentExerciseIndex === 0}>
           <Text style={styles.navButtonText}>Previous</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => setIsPaused(!isPaused)}>
+          <Text style={styles.navButtonText}>{isPaused ? 'Resume' : 'Pause'}</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.navButton} onPress={handleNextExercise}>
           <Text style={styles.navButtonText}>{currentExerciseIndex === exercises.length - 1 ? 'Finish' : 'Next'}</Text>
         </TouchableOpacity>
+        
       </View>
       {showCompletionAnimation && (
         <View style={styles.completionContainer}>
@@ -468,6 +502,17 @@ const styles = StyleSheet.create({
   completionAnimation: {
     width: 200,
     height: 200,
+  },
+  timerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 15,
+  },
+  progressBar: {
+    width: '100%',
+    height: 10,
+    marginTop: 10,
+    borderRadius: 5
   },
 });
 

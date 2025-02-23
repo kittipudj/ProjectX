@@ -1,6 +1,8 @@
 import React from 'react';
 import { router } from 'expo-router'
 import { View, Text, FlatList, Image, StyleSheet,TouchableOpacity } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from '../../../context/ThemeContext'; // Import useTheme
 
 const nutritionTips = [
   { id: '1', title: 'ประโยชน์ของการนอนหลับ', description: 'การนอนหลับเป็นสิ่งจำเป็นต่อร่างกายและจิตใจ ไม่เพียงแต่ช่วยให้ร่างกายได้พักผ่อน แต่ยังส่งผลต่อระบบต่าง ๆ ในร่างกาย เช่น สมอง หัวใจ ระบบภูมิคุ้มกัน และสุขภาพโดยรวม', image: require('../../../assets/images/sleep-1.jpg') },
@@ -10,29 +12,34 @@ const nutritionTips = [
 ];
 
 const NutritionTipsScreen = () => {
+  const { theme } = useTheme(); // Use theme from context
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: "/Discover"})}>
-              <Text style={styles.buttonText}>Back</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>การนอนหลับที่ดี</Text>
-      <FlatList
-        data={nutritionTips}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.itemTitle}>{item.title}</Text>
-            <Text style={styles.itemDescription}>{item.description}</Text>
-            <Image source={item.image} style={styles.image} />
-          </View>
-        )}
-      />
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={theme === "light" ? styles.containerLight : styles.containerDark}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: "/Discover"})}>
+                <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>การนอนหลับที่ดี</Text>
+        <FlatList
+          data={nutritionTips}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
+              <Image source={item.image} style={styles.image} />
+            </View>
+          )}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f8f9fa' },
+  containerLight: { flex: 1, padding: 16, backgroundColor: '#f8f9fa' },
+  containerDark: { flex: 1, padding: 16, backgroundColor: '#222' },
   title: { fontSize: 22, fontWeight: 'bold', color: '#1f66f2', marginBottom: 16, textAlign: 'center' },
   item: { 
     marginBottom: 10, 
